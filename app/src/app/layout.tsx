@@ -1,0 +1,27 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ThemeRegistry } from '@/components/ui/ThemeRegistry';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: '婚活イベント マッチングアプリ',
+  description: '複数パーティ対応の婚活イベント向けマッチングシステム',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ja">
+      <body className={inter.className}>
+        <ThemeRegistry>
+          {children}
+        </ThemeRegistry>
+      </body>
+    </html>
+  );
+}
