@@ -39,8 +39,8 @@ export default function AdminLayout({
         }`}
       >
         <div className="p-4 border-b border-gray-200">
-          <h1 className="text-xl font-semibold truncate">
-            RufulParty管理画面
+          <h1 className="text-xl">
+            RufulParty
           </h1>
         </div>
         <nav className="p-2">
@@ -67,7 +67,7 @@ export default function AdminLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-primary-main text-white shadow-md z-10">
+        <header className="bg-primary-main shadow-md z-10">
           <div className="flex items-center px-4 h-16">
             <button
               className="md:hidden p-2 rounded-md hover:bg-primary-dark"
@@ -77,7 +77,7 @@ export default function AdminLayout({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="ml-2 md:ml-0 text-xl font-semibold">
+            <h1 className="ml-2 md:ml-0 text-xl ">
               管理画面
             </h1>
           </div>
