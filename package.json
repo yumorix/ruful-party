@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migration:local": "supabase db reset && supabase gen types typescript --local > src/lib/db/database.types.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
