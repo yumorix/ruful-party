@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getParty, getParticipant } from '@/lib/db/queries';
+import DeleteParticipantButton from '@/components/admin/DeleteParticipantButton';
 
 interface ParticipantDetailPageProps {
   params: Promise<{
@@ -55,15 +56,23 @@ export default async function ParticipantDetailPage(props: ParticipantDetailPage
           参加者詳細
         </h1>
         
-        <Link 
-          href={`/admin/parties/${partyId}/participants/${participantId}/edit`}
-          className="inline-flex items-center px-4 py-2 bg-primary-main text-white rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-          </svg>
-          編集
-        </Link>
+        <div className="flex gap-2">
+          <Link 
+            href={`/admin/parties/${partyId}/participants/${participantId}/edit`}
+            className="inline-flex items-center px-4 py-2 bg-primary-main text-white rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+            編集
+          </Link>
+          
+          <DeleteParticipantButton 
+            partyId={partyId} 
+            participantId={participantId} 
+            participantName={participant.name} 
+          />
+        </div>
       </div>
       
       <div className="bg-white rounded-lg shadow p-6">
