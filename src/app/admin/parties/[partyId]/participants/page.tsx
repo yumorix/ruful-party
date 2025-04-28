@@ -127,7 +127,14 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                     maleParticipants.map((participant) => (
                       <tr key={participant.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{participant.participant_number}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{participant.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <Link 
+                            href={`/admin/parties/${partyId}/participants/${participant.id}`}
+                            className="text-primary-main hover:underline"
+                          >
+                            {participant.name}
+                          </Link>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {participant.access_token ? (
                             <span className="text-success-main">
@@ -142,20 +149,15 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <Link 
                             href={`/admin/parties/${partyId}/participants/${participant.id}`}
-                            className="text-primary-main hover:text-primary-dark mr-2"
+                            className="btn btn-xs btn-outlined mr-2"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                            </svg>
+                            詳細
                           </Link>
                           <Link 
                             href={`/admin/parties/${partyId}/participants/${participant.id}/edit`}
-                            className="text-primary-main hover:text-primary-dark mr-2"
+                            className="btn btn-xs btn-outlined"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
+                            編集
                           </Link>
                         </td>
                       </tr>
@@ -191,7 +193,14 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                     femaleParticipants.map((participant) => (
                       <tr key={participant.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{participant.participant_number}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{participant.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <Link 
+                            href={`/admin/parties/${partyId}/participants/${participant.id}`}
+                            className="text-primary-main hover:underline"
+                          >
+                            {participant.name}
+                          </Link>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {participant.access_token ? (
                             <span className="text-success-main">
@@ -206,20 +215,15 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <Link 
                             href={`/admin/parties/${partyId}/participants/${participant.id}`}
-                            className="text-primary-main hover:text-primary-dark mr-2"
+                            className="btn btn-xs btn-outlined mr-2"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                            </svg>
+                            詳細
                           </Link>
                           <Link 
                             href={`/admin/parties/${partyId}/participants/${participant.id}/edit`}
-                            className="text-primary-main hover:text-primary-dark mr-2"
+                            className="btn btn-xs btn-outlined"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
+                            編集
                           </Link>
                         </td>
                       </tr>
