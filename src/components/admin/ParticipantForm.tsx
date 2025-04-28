@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { participantSchema, ParticipantFormData } from '@/lib/utils/validation';
 import { Participant } from '@/lib/db/supabase';
+import { useRouter } from 'next/navigation';
 
 interface ParticipantFormProps {
   partyId: string;
@@ -20,6 +21,7 @@ export default function ParticipantForm({
   isSubmitting 
 }: ParticipantFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const router = useRouter();
   
   const { 
     control, 
@@ -39,6 +41,7 @@ export default function ParticipantForm({
     try {
       setSubmitError(null);
       await onSubmit(data);
+      router.push(`/admin/parties/${partyId}/participants`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('参加者の保存中にエラーが発生しました。もう一度お試しください。');

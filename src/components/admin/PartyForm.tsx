@@ -7,6 +7,7 @@ import { format, parse } from 'date-fns';
 import { ja } from 'date-fns/locale/ja';
 import { partySchema, PartyFormData } from '@/lib/utils/validation';
 import { Party } from '@/lib/db/supabase';
+import { useRouter } from 'next/navigation';
 
 interface PartyFormProps {
   initialData?: Partial<Party>;
@@ -19,6 +20,7 @@ export default function PartyForm({
   onSubmit, 
   isSubmitting 
 }: PartyFormProps) {
+  const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
   
   const { 
@@ -41,6 +43,7 @@ export default function PartyForm({
     try {
       setSubmitError(null);
       await onSubmit(formData);
+      router.push(`/admin/parties/${initialData?.id}`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('パーティの保存中にエラーが発生しました。もう一度お試しください。');

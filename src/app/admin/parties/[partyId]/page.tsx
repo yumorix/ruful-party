@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import PartyForm from '@/components/admin/PartyForm';
 import { getParty, updateParty } from '@/lib/db/queries';
@@ -24,7 +24,6 @@ export default async function PartyPage(props: PartyPageProps) {
     'use server';
     
     await updateParty(partyId, data);
-    redirect(`/admin/parties/${partyId}`);
   }
 
   return (

@@ -29,8 +29,6 @@ export default async function NewParticipantPage(props: NewParticipantPageProps)
       party_id: partyId,
       access_token: generateAccessToken(partyId, data.name)
     });
-    
-    redirect(`/admin/parties/${partyId}/participants`);
   }
 
   return (
