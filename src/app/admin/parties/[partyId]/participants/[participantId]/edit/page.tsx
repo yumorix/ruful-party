@@ -1,5 +1,4 @@
 import { notFound, redirect } from 'next/navigation';
-import { Box, Typography, Breadcrumbs } from '@mui/material';
 import Link from 'next/link';
 import ParticipantForm from '@/components/admin/ParticipantForm';
 import { getParty, getParticipant, updateParticipant } from '@/lib/db/queries';
@@ -36,13 +35,29 @@ export default async function EditParticipantPage({ params }: EditParticipantPag
   }
   
   return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-        <Link href="/admin/parties">パーティ一覧</Link>
-        <Link href={`/admin/parties/${partyId}`}>{party.name}</Link>
-        <Link href={`/admin/parties/${partyId}/participants`}>参加者管理</Link>
-        <Typography color="text.primary">{participant.name} を編集</Typography>
-      </Breadcrumbs>
+    <div>
+      <nav className="mb-6" aria-label="breadcrumb">
+        <ol className="flex items-center space-x-2">
+          <li>
+            <Link href="/admin/parties" className="text-primary-main hover:underline">
+              パーティ一覧
+            </Link>
+          </li>
+          <li className="before:content-['/'] before:mx-2">
+            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+              {party.name}
+            </Link>
+          </li>
+          <li className="before:content-['/'] before:mx-2">
+            <Link href={`/admin/parties/${partyId}/participants`} className="text-primary-main hover:underline">
+              参加者管理
+            </Link>
+          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">
+            {participant.name} を編集
+          </li>
+        </ol>
+      </nav>
       
       <ParticipantForm 
         partyId={partyId}
@@ -50,6 +65,6 @@ export default async function EditParticipantPage({ params }: EditParticipantPag
         onSubmit={handleSubmit}
         isSubmitting={false}
       />
-    </Box>
+    </div>
   );
 }

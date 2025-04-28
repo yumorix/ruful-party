@@ -1,5 +1,4 @@
 import { notFound, redirect } from 'next/navigation';
-import { Box, Typography, Breadcrumbs } from '@mui/material';
 import Link from 'next/link';
 import SettingForm from '@/components/admin/SettingForm';
 import { getParty, getPartySetting, createOrUpdatePartySetting } from '@/lib/db/queries';
@@ -46,18 +45,30 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
   }
   
   return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-        <Link href="/admin/parties">パーティ一覧</Link>
-        <Link href={`/admin/parties/${partyId}`}>{party.name}</Link>
-        <Typography color="text.primary">設定</Typography>
-      </Breadcrumbs>
+    <div>
+      <nav className="mb-6" aria-label="breadcrumb">
+        <ol className="flex items-center space-x-2">
+          <li>
+            <Link href="/admin/parties" className="text-primary-main hover:underline">
+              パーティ一覧
+            </Link>
+          </li>
+          <li className="before:content-['/'] before:mx-2">
+            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+              {party.name}
+            </Link>
+          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">
+            設定
+          </li>
+        </ol>
+      </nav>
       
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">
           パーティ設定
-        </Typography>
-      </Box>
+        </h1>
+      </div>
       
       <SettingForm 
         partyId={partyId}
@@ -65,6 +76,6 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
         onSubmit={handleSubmit}
         isSubmitting={false}
       />
-    </Box>
+    </div>
   );
 }

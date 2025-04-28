@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
 import PartyList from '@/components/admin/PartyList';
 import { getParties, deleteParty } from '@/lib/db/queries';
 
@@ -21,14 +20,14 @@ async function PartiesContent() {
 
 export default function PartiesPage() {
   return (
-    <Box>
+    <div>
       <Suspense fallback={
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <CircularProgress />
-        </Box>
+        <div className="flex justify-center mt-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-main"></div>
+        </div>
       }>
         <PartiesContent />
       </Suspense>
-    </Box>
+    </div>
   );
 }

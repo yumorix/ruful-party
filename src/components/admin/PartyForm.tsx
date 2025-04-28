@@ -3,24 +3,8 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { 
-  Box, 
-  Button, 
-  TextField, 
-  FormControl, 
-  FormHelperText,
-  Select,
-  MenuItem,
-  Typography,
-  Paper,
-  Stack,
-  InputLabel
-} from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { format, parse } from 'date-fns';
 import { ja } from 'date-fns/locale/ja';
-import { format } from 'date-fns';
 import { partySchema, PartyFormData } from '@/lib/utils/validation';
 import { Party } from '@/lib/db/supabase';
 
@@ -64,147 +48,221 @@ export default function PartyForm({
   };
   
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-      <Paper elevation={2} sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
-        <Typography variant="h5" component="h2" gutterBottom>
+    <div className="card max-w-xl mx-auto">
+      <div className="card-content">
+        <h2 className="text-2xl font-semibold mb-4">
           {initialData?.id ? 'パーティを編集' : '新規パーティを作成'}
-        </Typography>
+        </h2>
         
-        <Box component="form" onSubmit={handleSubmit(onFormSubmit)} noValidate>
-          <Stack spacing={3}>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="パーティ名"
-                  fullWidth
-                  required
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                />
-              )}
-            />
+        <form onSubmit={handleSubmit(onFormSubmit)} noValidate className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium mb-1">
+                      パーティ名 <span className="text-error-main">*</span>
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                        errors.name ? 'border-error-main' : 'border-gray-300'
+                      }`}
+                      {...field}
+                    />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-error-main">{errors.name.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
             
-            <Controller
-              name="date"
-              control={control}
-              render={({ field }) => (
-                <DateTimePicker
-                  label="開催日時"
-                  value={field.value ? new Date(field.value) : null}
-                  onChange={(newValue) => {
-                    if (newValue) {
-                      field.onChange(format(newValue, "yyyy-MM-dd'T'HH:mm:ss"));
-                    }
-                  }}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      required: true,
-                      error: !!errors.date,
-                      helperText: errors.date?.message
-                    }
-                  }}
-                />
-              )}
-            />
+            <div>
+              <Controller
+                name="date"
+                control={control}
+                render={({ field }) => {
+                  // Convert ISO string to date parts for the inputs
+                  const dateValue = field.value ? new Date(field.value) : new Date();
+                  const dateString = format(dateValue, 'yyyy-MM-dd');
+                  const timeString = format(dateValue, 'HH:mm');
+                  
+                  return (
+                    <div>
+                      <label htmlFor="date" className="block text-sm font-medium mb-1">
+                        開催日時 <span className="text-error-main">*</span>
+                      </label>
+                      <div className="flex space-x-2">
+                        <input
+                          id="date"
+                          type="date"
+                          className={`flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                            errors.date ? 'border-error-main' : 'border-gray-300'
+                          }`}
+                          value={dateString}
+                          onChange={(e) => {
+                            const newDate = parse(
+                              `${e.target.value} ${timeString}`,
+                              'yyyy-MM-dd HH:mm',
+                              new Date()
+                            );
+                            field.onChange(format(newDate, "yyyy-MM-dd'T'HH:mm:ss"));
+                          }}
+                        />
+                        <input
+                          id="time"
+                          type="time"
+                          className={`w-32 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                            errors.date ? 'border-error-main' : 'border-gray-300'
+                          }`}
+                          value={timeString}
+                          onChange={(e) => {
+                            const newDate = parse(
+                              `${dateString} ${e.target.value}`,
+                              'yyyy-MM-dd HH:mm',
+                              new Date()
+                            );
+                            field.onChange(format(newDate, "yyyy-MM-dd'T'HH:mm:ss"));
+                          }}
+                        />
+                      </div>
+                      {errors.date && (
+                        <p className="mt-1 text-sm text-error-main">{errors.date.message}</p>
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            </div>
             
-            <Controller
-              name="location"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="開催場所"
-                  fullWidth
-                  required
-                  error={!!errors.location}
-                  helperText={errors.location?.message}
-                />
-              )}
-            />
+            <div>
+              <Controller
+                name="location"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="location" className="block text-sm font-medium mb-1">
+                      開催場所 <span className="text-error-main">*</span>
+                    </label>
+                    <input
+                      id="location"
+                      type="text"
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                        errors.location ? 'border-error-main' : 'border-gray-300'
+                      }`}
+                      {...field}
+                    />
+                    {errors.location && (
+                      <p className="mt-1 text-sm text-error-main">{errors.location.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
             
-            <Controller
-              name="capacity"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="定員"
-                  type="number"
-                  fullWidth
-                  required
-                  inputProps={{ min: 2 }}
-                  error={!!errors.capacity}
-                  helperText={errors.capacity?.message}
-                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                />
-              )}
-            />
+            <div>
+              <Controller
+                name="capacity"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="capacity" className="block text-sm font-medium mb-1">
+                      定員 <span className="text-error-main">*</span>
+                    </label>
+                    <input
+                      id="capacity"
+                      type="number"
+                      min={2}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                        errors.capacity ? 'border-error-main' : 'border-gray-300'
+                      }`}
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                    />
+                    {errors.capacity && (
+                      <p className="mt-1 text-sm text-error-main">{errors.capacity.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
             
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.status}>
-                  <InputLabel id="status-label">ステータス</InputLabel>
-                  <Select
-                    {...field}
-                    labelId="status-label"
-                    label="ステータス"
-                  >
-                    <MenuItem value="preparing">準備中</MenuItem>
-                    <MenuItem value="active">開催中</MenuItem>
-                    <MenuItem value="closed">終了</MenuItem>
-                  </Select>
-                  {errors.status && (
-                    <FormHelperText>{errors.status.message}</FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
+            <div>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="status" className="block text-sm font-medium mb-1">
+                      ステータス
+                    </label>
+                    <select
+                      id="status"
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                        errors.status ? 'border-error-main' : 'border-gray-300'
+                      }`}
+                      {...field}
+                    >
+                      <option value="preparing">準備中</option>
+                      <option value="active">開催中</option>
+                      <option value="closed">終了</option>
+                    </select>
+                    {errors.status && (
+                      <p className="mt-1 text-sm text-error-main">{errors.status.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
             
-            <Controller
-              name="current_mode"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth error={!!errors.current_mode}>
-                  <InputLabel id="mode-label">投票モード</InputLabel>
-                  <Select
-                    {...field}
-                    labelId="mode-label"
-                    label="投票モード"
-                  >
-                    <MenuItem value="interim">中間投票</MenuItem>
-                    <MenuItem value="final">最終投票</MenuItem>
-                    <MenuItem value="closed">クローズ</MenuItem>
-                  </Select>
-                  {errors.current_mode && (
-                    <FormHelperText>{errors.current_mode.message}</FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-            
-            {submitError && (
-              <Typography color="error">{submitError}</Typography>
-            )}
-            
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                color="primary"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? '保存中...' : (initialData?.id ? '更新' : '作成')}
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      </Paper>
-    </LocalizationProvider>
+            <div>
+              <Controller
+                name="current_mode"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="current_mode" className="block text-sm font-medium mb-1">
+                      投票モード
+                    </label>
+                    <select
+                      id="current_mode"
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main ${
+                        errors.current_mode ? 'border-error-main' : 'border-gray-300'
+                      }`}
+                      {...field}
+                    >
+                      <option value="interim">中間投票</option>
+                      <option value="final">最終投票</option>
+                      <option value="closed">クローズ</option>
+                    </select>
+                    {errors.current_mode && (
+                      <p className="mt-1 text-sm text-error-main">{errors.current_mode.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+          </div>
+          
+          {submitError && (
+            <div className="text-error-main">{submitError}</div>
+          )}
+          
+          <div className="flex justify-end">
+            <button 
+              type="submit" 
+              className="btn btn-primary"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? '保存中...' : (initialData?.id ? '更新' : '作成')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

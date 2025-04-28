@@ -1,20 +1,4 @@
 import { notFound, redirect } from 'next/navigation';
-import { 
-  Box, 
-  Typography, 
-  Breadcrumbs, 
-  Paper, 
-  Tabs, 
-  Tab, 
-  Button, 
-  Alert,
-  CircularProgress,
-  Stack,
-  Card,
-  CardContent,
-  Divider,
-  Chip
-} from '@mui/material';
 import Link from 'next/link';
 import { 
   getParty, 
@@ -141,93 +125,119 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
   }
   
   return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-        <Link href="/admin/parties">パーティ一覧</Link>
-        <Link href={`/admin/parties/${partyId}`}>{party.name}</Link>
-        <Typography color="text.primary">マッチング</Typography>
-      </Breadcrumbs>
+    <div>
+      <nav className="mb-6" aria-label="breadcrumb">
+        <ol className="flex items-center space-x-2">
+          <li>
+            <Link href="/admin/parties" className="text-primary-main hover:underline">
+              パーティ一覧
+            </Link>
+          </li>
+          <li className="before:content-['/'] before:mx-2">
+            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+              {party.name}
+            </Link>
+          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">
+            マッチング
+          </li>
+        </ol>
+      </nav>
       
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">
           マッチング管理
-        </Typography>
-      </Box>
+        </h1>
+      </div>
       
-      <Paper sx={{ mb: 4, p: 3 }}>
-        <Typography variant="h6" gutterBottom>
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-2">
           現在のモード: {
             party.current_mode === 'interim' ? '中間投票' :
             party.current_mode === 'final' ? '最終投票' :
             'クローズ'
           }
-        </Typography>
+        </h2>
         
-        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-          <Button 
-            variant={party.current_mode === 'interim' ? 'contained' : 'outlined'}
+        <div className="flex gap-4 mt-4">
+          <button 
+            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+              party.current_mode === 'interim' 
+                ? 'bg-primary-main text-white' 
+                : 'border border-primary-main text-primary-main hover:bg-gray-50'
+            }`}
             onClick={() => handleChangeMode('interim')}
-            color="primary"
           >
             中間投票モード
-          </Button>
-          <Button 
-            variant={party.current_mode === 'final' ? 'contained' : 'outlined'}
+          </button>
+          <button 
+            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+              party.current_mode === 'final' 
+                ? 'bg-secondary-main text-white' 
+                : 'border border-secondary-main text-secondary-main hover:bg-gray-50'
+            }`}
             onClick={() => handleChangeMode('final')}
-            color="secondary"
           >
             最終投票モード
-          </Button>
-          <Button 
-            variant={party.current_mode === 'closed' ? 'contained' : 'outlined'}
+          </button>
+          <button 
+            className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+              party.current_mode === 'closed' 
+                ? 'bg-error-main text-white' 
+                : 'border border-error-main text-error-main hover:bg-gray-50'
+            }`}
             onClick={() => handleChangeMode('closed')}
-            color="error"
           >
             クローズ
-          </Button>
-        </Stack>
-      </Paper>
+          </button>
+        </div>
+      </div>
       
-      <Paper sx={{ mb: 4 }}>
-        <Tabs value={0} aria-label="matching tabs">
-          <Tab label="中間マッチング" />
-          <Tab label="最終マッチング" />
-        </Tabs>
-        
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" gutterBottom>
+      <div className="bg-white rounded-lg shadow mb-8">
+        <div className="border-b border-gray-200">
+          <div className="flex">
+            <button className="px-4 py-2 border-b-2 border-primary-main text-primary-main font-medium">
               中間マッチング
-            </Typography>
+            </button>
+            <button className="px-4 py-2 text-gray-500 font-medium">
+              最終マッチング
+            </button>
+          </div>
+        </div>
+        
+        <div className="p-6">
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">
+              中間マッチング
+            </h3>
             
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" gutterBottom>
+            <div className="mb-4">
+              <p className="text-sm mb-1">
                 投票数: {interimVotes.length}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
+              </p>
+              <p className="text-sm mb-1">
                 マッチング数: {interimMatches.length}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
+              </p>
+              <p className="text-sm mb-1">
                 席替え: {interimSeatingPlan ? '生成済み' : '未生成'}
-              </Typography>
-            </Box>
+              </p>
+            </div>
             
-            <Button 
-              variant="contained" 
-              color="primary"
+            <button 
+              className="px-4 py-2 rounded-lg font-medium bg-primary-main text-white hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleGenerateInterimMatches}
               disabled={interimVotes.length === 0 || !settings}
             >
               中間マッチングを生成
-            </Button>
+            </button>
             
             {interimMatches.length > 0 && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" gutterBottom>
+              <div className="mt-6">
+                <h4 className="text-base font-medium mb-2">
                   マッチング結果
-                </Typography>
+                </h4>
                 
-                <Stack direction="row" flexWrap="wrap" gap={2}>
+                <div className="flex flex-wrap gap-4">
                   {interimMatches.map((match) => {
                     const participant1 = participants.find(p => p.id === match.participant1_id);
                     const participant2 = participants.find(p => p.id === match.participant2_id);
@@ -235,74 +245,77 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
                     if (!participant1 || !participant2) return null;
                     
                     return (
-                      <Box key={match.id} sx={{ width: { xs: '100%', sm: '45%', md: '30%' } }}>
-                        <Card>
-                          <CardContent>
-                            <Typography variant="subtitle2" gutterBottom>
+                      <div key={match.id} className="w-full sm:w-[45%] md:w-[30%]">
+                        <div className="bg-white rounded-lg shadow">
+                          <div className="p-4">
+                            <h5 className="text-sm font-medium mb-2">
                               テーブル {match.table_number}
-                            </Typography>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                              <Typography variant="body2">
+                            </h5>
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm">
                                 {participant1.name} (#{participant1.participant_number})
-                              </Typography>
-                              <Chip 
-                                label={participant1.gender === 'male' ? '男性' : '女性'} 
-                                size="small" 
-                                color={participant1.gender === 'male' ? 'primary' : 'secondary'}
-                              />
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <Typography variant="body2">
+                              </span>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                participant1.gender === 'male' 
+                                  ? 'bg-primary-light text-primary-dark' 
+                                  : 'bg-secondary-light text-secondary-dark'
+                              }`}>
+                                {participant1.gender === 'male' ? '男性' : '女性'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm">
                                 {participant2.name} (#{participant2.participant_number})
-                              </Typography>
-                              <Chip 
-                                label={participant2.gender === 'male' ? '男性' : '女性'} 
-                                size="small" 
-                                color={participant2.gender === 'male' ? 'primary' : 'secondary'}
-                              />
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Box>
+                              </span>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                participant2.gender === 'male' 
+                                  ? 'bg-primary-light text-primary-dark' 
+                                  : 'bg-secondary-light text-secondary-dark'
+                              }`}>
+                                {participant2.gender === 'male' ? '男性' : '女性'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     );
                   })}
-                </Stack>
-              </Box>
+                </div>
+              </div>
             )}
-          </Box>
+          </div>
           
-          <Divider sx={{ my: 4 }} />
+          <hr className="my-8 border-gray-200" />
           
-          <Box>
-            <Typography variant="h6" gutterBottom>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">
               最終マッチング
-            </Typography>
+            </h3>
             
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" gutterBottom>
+            <div className="mb-4">
+              <p className="text-sm mb-1">
                 投票数: {finalVotes.length}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
+              </p>
+              <p className="text-sm mb-1">
                 マッチング数: {finalMatches.length}
-              </Typography>
-            </Box>
+              </p>
+            </div>
             
-            <Button 
-              variant="contained" 
-              color="secondary"
+            <button 
+              className="px-4 py-2 rounded-lg font-medium bg-secondary-main text-white hover:bg-secondary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleGenerateFinalMatches}
               disabled={finalVotes.length === 0 || !settings}
             >
               最終マッチングを生成
-            </Button>
+            </button>
             
             {finalMatches.length > 0 && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" gutterBottom>
+              <div className="mt-6">
+                <h4 className="text-base font-medium mb-2">
                   マッチング結果
-                </Typography>
+                </h4>
                 
-                <Stack direction="row" flexWrap="wrap" gap={2}>
+                <div className="flex flex-wrap gap-4">
                   {finalMatches.map((match) => {
                     const participant1 = participants.find(p => p.id === match.participant1_id);
                     const participant2 = participants.find(p => p.id === match.participant2_id);
@@ -310,40 +323,44 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
                     if (!participant1 || !participant2) return null;
                     
                     return (
-                      <Box key={match.id} sx={{ width: { xs: '100%', sm: '45%', md: '30%' } }}>
-                        <Card>
-                          <CardContent>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                              <Typography variant="body2">
+                      <div key={match.id} className="w-full sm:w-[45%] md:w-[30%]">
+                        <div className="bg-white rounded-lg shadow">
+                          <div className="p-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm">
                                 {participant1.name} (#{participant1.participant_number})
-                              </Typography>
-                              <Chip 
-                                label={participant1.gender === 'male' ? '男性' : '女性'} 
-                                size="small" 
-                                color={participant1.gender === 'male' ? 'primary' : 'secondary'}
-                              />
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                              <Typography variant="body2">
+                              </span>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                participant1.gender === 'male' 
+                                  ? 'bg-primary-light text-primary-dark' 
+                                  : 'bg-secondary-light text-secondary-dark'
+                              }`}>
+                                {participant1.gender === 'male' ? '男性' : '女性'}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm">
                                 {participant2.name} (#{participant2.participant_number})
-                              </Typography>
-                              <Chip 
-                                label={participant2.gender === 'male' ? '男性' : '女性'} 
-                                size="small" 
-                                color={participant2.gender === 'male' ? 'primary' : 'secondary'}
-                              />
-                            </Box>
-                          </CardContent>
-                        </Card>
-                      </Box>
+                              </span>
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                participant2.gender === 'male' 
+                                  ? 'bg-primary-light text-primary-dark' 
+                                  : 'bg-secondary-light text-secondary-dark'
+                              }`}>
+                                {participant2.gender === 'male' ? '男性' : '女性'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     );
                   })}
-                </Stack>
-              </Box>
+                </div>
+              </div>
             )}
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
