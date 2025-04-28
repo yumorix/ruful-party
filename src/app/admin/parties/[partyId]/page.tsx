@@ -59,12 +59,12 @@ export default async function PartyPage({ params }: PartyPageProps) {
           >
             設定
           </Link>
-          <Link 
+          {/* <Link 
             href={`/admin/parties/${partyId}/matching`}
             className="text-primary-main hover:underline"
           >
             マッチング
-          </Link>
+          </Link> */}
         </div>
       </div>
       
