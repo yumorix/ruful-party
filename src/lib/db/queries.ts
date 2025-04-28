@@ -1,20 +1,25 @@
 import { supabase } from './supabase';
 import { 
   Party, 
+  PartyInsert,
+  PartyUpdate,
   Participant, 
+  ParticipantInsert,
+  ParticipantUpdate,
   Vote, 
+  VoteInsert,
   PartySetting, 
+  PartySettingInsert,
   Match, 
-  SeatingPlan 
+  MatchInsert,
+  SeatingPlan,
+  SeatingPlanInsert
 } from './supabase';
 import { ulid } from 'ulid';
 import { 
   PartyFormData, 
   ParticipantFormData, 
-  VoteFormData, 
-  PartySettingsFormData, 
-  MatchFormData, 
-  SeatingPlanFormData 
+  VoteFormData
 } from '@/lib/utils/validation';
 
 // Party queries
@@ -29,7 +34,7 @@ export async function getParties(): Promise<Party[]> {
     throw error;
   }
   
-  return data || [];
+  return (data || []) as Party[];
 }
 
 export async function getParty(id: string): Promise<Party | null> {
@@ -49,21 +54,23 @@ export async function getParty(id: string): Promise<Party | null> {
     throw error;
   }
   
-  return data;
+  return data as Party | null;
 }
 
 export async function createParty(party: PartyFormData): Promise<Party> {
   const id = ulid();
   const now = new Date().toISOString();
   
+  const partyData: PartyInsert = {
+    id,
+    ...party,
+    created_at: now,
+    updated_at: now
+  };
+  
   const { data, error } = await supabase
     .from('parties')
-    .insert({
-      id,
-      ...party,
-      created_at: now,
-      updated_at: now
-    })
+    .insert(partyData)
     .select()
     .single();
   
@@ -72,18 +79,20 @@ export async function createParty(party: PartyFormData): Promise<Party> {
     throw error;
   }
   
-  return data;
+  return data as Party;
 }
 
 export async function updateParty(id: string, party: Partial<PartyFormData>): Promise<Party> {
   const now = new Date().toISOString();
   
+  const partyData: PartyUpdate = {
+    ...party,
+    updated_at: now
+  };
+  
   const { data, error } = await supabase
     .from('parties')
-    .update({
-      ...party,
-      updated_at: now
-    })
+    .update(partyData)
     .eq('id', id)
     .select()
     .single();
@@ -93,7 +102,7 @@ export async function updateParty(id: string, party: Partial<PartyFormData>): Pr
     throw error;
   }
   
-  return data;
+  return data as Party;
 }
 
 export async function deleteParty(id: string): Promise<void> {
@@ -121,7 +130,7 @@ export async function getParticipants(partyId: string): Promise<Participant[]> {
     throw error;
   }
   
-  return data || [];
+  return (data || []) as Participant[];
 }
 
 export async function getParticipant(id: string): Promise<Participant | null> {
@@ -140,7 +149,7 @@ export async function getParticipant(id: string): Promise<Participant | null> {
     throw error;
   }
   
-  return data;
+  return data as Participant | null;
 }
 
 export async function getParticipantByToken(token: string): Promise<Participant | null> {
@@ -159,20 +168,24 @@ export async function getParticipantByToken(token: string): Promise<Participant 
     throw error;
   }
   
-  return data;
+  return data as Participant | null;
 }
 
 export async function createParticipant(participant: ParticipantFormData & { access_token?: string }): Promise<Participant> {
   const id = ulid();
   const now = new Date().toISOString();
   
+  // Ensure access_token is not undefined
+  const participantData: ParticipantInsert = {
+    id,
+    ...participant,
+    access_token: participant.access_token || '',
+    created_at: now
+  };
+  
   const { data, error } = await supabase
     .from('participants')
-    .insert({
-      id,
-      ...participant,
-      created_at: now
-    })
+    .insert(participantData)
     .select()
     .single();
   
@@ -181,13 +194,17 @@ export async function createParticipant(participant: ParticipantFormData & { acc
     throw error;
   }
   
-  return data;
+  return data as Participant;
 }
 
 export async function updateParticipant(id: string, participant: Partial<ParticipantFormData>): Promise<Participant> {
+  const participantData: ParticipantUpdate = {
+    ...participant
+  };
+  
   const { data, error } = await supabase
     .from('participants')
-    .update(participant)
+    .update(participantData)
     .eq('id', id)
     .select()
     .single();
@@ -197,7 +214,7 @@ export async function updateParticipant(id: string, participant: Partial<Partici
     throw error;
   }
   
-  return data;
+  return data as Participant;
 }
 
 export async function deleteParticipant(id: string): Promise<void> {
@@ -226,20 +243,22 @@ export async function getVotes(partyId: string, voteType: 'interim' | 'final'): 
     throw error;
   }
   
-  return data || [];
+  return (data || []) as Vote[];
 }
 
 export async function createVote(vote: VoteFormData): Promise<Vote> {
   const id = ulid();
   const now = new Date().toISOString();
   
+  const voteData: VoteInsert = {
+    id,
+    ...vote,
+    created_at: now
+  };
+  
   const { data, error } = await supabase
     .from('votes')
-    .insert({
-      id,
-      ...vote,
-      created_at: now
-    })
+    .insert(voteData)
     .select()
     .single();
   
@@ -248,7 +267,7 @@ export async function createVote(vote: VoteFormData): Promise<Vote> {
     throw error;
   }
   
-  return data;
+  return data as Vote;
 }
 
 // Party settings queries
@@ -268,7 +287,7 @@ export async function getPartySetting(partyId: string): Promise<PartySetting | n
     throw error;
   }
   
-  return data;
+  return data as PartySetting | null;
 }
 
 export async function createOrUpdatePartySetting(setting: Omit<PartySetting, 'id' | 'updated_at'>): Promise<PartySetting> {
@@ -279,12 +298,14 @@ export async function createOrUpdatePartySetting(setting: Omit<PartySetting, 'id
   
   if (existingSetting) {
     // Update
+    const updateData = {
+      ...setting,
+      updated_at: now
+    };
+    
     const { data, error } = await supabase
       .from('party_settings')
-      .update({
-        ...setting,
-        updated_at: now
-      })
+      .update(updateData)
       .eq('id', existingSetting.id)
       .select()
       .single();
@@ -294,18 +315,20 @@ export async function createOrUpdatePartySetting(setting: Omit<PartySetting, 'id
       throw error;
     }
     
-    return data;
+    return data as PartySetting;
   } else {
     // Create
     const id = ulid();
     
+    const insertData: PartySettingInsert = {
+      id,
+      ...setting,
+      updated_at: now
+    };
+    
     const { data, error } = await supabase
       .from('party_settings')
-      .insert({
-        id,
-        ...setting,
-        updated_at: now
-      })
+      .insert(insertData)
       .select()
       .single();
     
@@ -314,7 +337,7 @@ export async function createOrUpdatePartySetting(setting: Omit<PartySetting, 'id
       throw error;
     }
     
-    return data;
+    return data as PartySetting;
   }
 }
 
@@ -332,7 +355,7 @@ export async function getMatches(partyId: string, matchType: 'interim' | 'final'
     throw error;
   }
   
-  return data || [];
+  return (data || []) as Match[];
 }
 
 export async function createMatches(matches: Omit<Match, 'id' | 'created_at'>[]): Promise<Match[]> {
@@ -355,7 +378,7 @@ export async function createMatches(matches: Omit<Match, 'id' | 'created_at'>[])
   }
   
   // Create new matches
-  const matchesWithIds = matches.map(match => ({
+  const matchesWithIds: MatchInsert[] = matches.map(match => ({
     id: ulid(),
     ...match,
     created_at: now
@@ -371,7 +394,7 @@ export async function createMatches(matches: Omit<Match, 'id' | 'created_at'>[])
     throw error;
   }
   
-  return data || [];
+  return (data || []) as Match[];
 }
 
 // Seating plan queries
@@ -392,7 +415,7 @@ export async function getSeatingPlan(partyId: string, planType: 'interim' | 'fin
     throw error;
   }
   
-  return data;
+  return data as SeatingPlan | null;
 }
 
 export async function createOrUpdateSeatingPlan(plan: Omit<SeatingPlan, 'id' | 'created_at'>): Promise<SeatingPlan> {
@@ -403,12 +426,14 @@ export async function createOrUpdateSeatingPlan(plan: Omit<SeatingPlan, 'id' | '
   
   if (existingPlan) {
     // Update
+    const updateData = {
+      ...plan,
+      created_at: now
+    };
+    
     const { data, error } = await supabase
       .from('seating_plans')
-      .update({
-        ...plan,
-        created_at: now
-      })
+      .update(updateData)
       .eq('id', existingPlan.id)
       .select()
       .single();
@@ -418,18 +443,20 @@ export async function createOrUpdateSeatingPlan(plan: Omit<SeatingPlan, 'id' | '
       throw error;
     }
     
-    return data;
+    return data as SeatingPlan;
   } else {
     // Create
     const id = ulid();
     
+    const insertData: SeatingPlanInsert = {
+      id,
+      ...plan,
+      created_at: now
+    };
+    
     const { data, error } = await supabase
       .from('seating_plans')
-      .insert({
-        id,
-        ...plan,
-        created_at: now
-      })
+      .insert(insertData)
       .select()
       .single();
     
@@ -438,6 +465,6 @@ export async function createOrUpdateSeatingPlan(plan: Omit<SeatingPlan, 'id' | '
       throw error;
     }
     
-    return data;
+    return data as SeatingPlan;
   }
 }

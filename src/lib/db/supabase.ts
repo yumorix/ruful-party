@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database } from './database.types'
+import { Database, Tables, TablesInsert, TablesUpdate } from './database.types'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -7,42 +7,30 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
-// Type definitions for database tables
-export interface Party {
-  id: string;
-  name: string;
-  date: string;
-  location: string;
-  capacity: number;
+// Type aliases using database.types.ts
+export type Party = Tables<'parties'> & {
   status: 'preparing' | 'active' | 'closed';
   current_mode: 'interim' | 'final' | 'closed';
-  created_at: string;
-  updated_at: string;
-}
+};
 
-export interface Participant {
-  id: string;
-  party_id: string;
-  participant_number: number;
-  name: string;
+export type PartyInsert = TablesInsert<'parties'>;
+export type PartyUpdate = TablesUpdate<'parties'>;
+
+export type Participant = Tables<'participants'> & {
   gender: 'male' | 'female';
-  access_token: string | null;
-  created_at: string;
-}
+};
 
-export interface Vote {
-  id: string;
-  party_id: string;
-  voter_id: string;
-  voted_id: string;
+export type ParticipantInsert = TablesInsert<'participants'>;
+export type ParticipantUpdate = TablesUpdate<'participants'>;
+
+export type Vote = Tables<'votes'> & {
   vote_type: 'interim' | 'final';
-  rank: number;
-  created_at: string;
-}
+};
 
-export interface PartySetting {
-  id: string;
-  party_id: string;
+export type VoteInsert = TablesInsert<'votes'>;
+export type VoteUpdate = TablesUpdate<'votes'>;
+
+export type PartySetting = Tables<'party_settings'> & {
   seating_layout: {
     tableCount: number;
     seatsPerTable: number;
@@ -56,25 +44,21 @@ export interface PartySetting {
     requireMixedGender: boolean;
     alternateSeating: boolean;
   };
-  updated_at: string;
-}
+};
 
-export interface Match {
-  id: string;
-  party_id: string;
+export type PartySettingInsert = TablesInsert<'party_settings'>;
+export type PartySettingUpdate = TablesUpdate<'party_settings'>;
+
+export type Match = Tables<'matches'> & {
   match_type: 'interim' | 'final';
-  participant1_id: string;
-  participant2_id: string;
-  table_number: number | null;
-  seat_positions: any;
-  created_at: string;
-}
+};
 
-export interface SeatingPlan {
-  id: string;
-  party_id: string;
+export type MatchInsert = TablesInsert<'matches'>;
+export type MatchUpdate = TablesUpdate<'matches'>;
+
+export type SeatingPlan = Tables<'seating_plans'> & {
   plan_type: 'interim' | 'final';
-  layout_data: any;
-  image_url: string | null;
-  created_at: string;
-}
+};
+
+export type SeatingPlanInsert = TablesInsert<'seating_plans'>;
+export type SeatingPlanUpdate = TablesUpdate<'seating_plans'>;
