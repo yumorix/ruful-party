@@ -7,26 +7,27 @@ import ParticipantForm from '@/components/admin/ParticipantForm';
 import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
 
 interface ParticipantsPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
-export default async function ParticipantsPage({ params }: ParticipantsPageProps) {
+export default async function ParticipantsPage(props: ParticipantsPageProps) {
+  const params = await props.params;
   const { partyId } = params;
-  
+
   const party = await getParty(partyId);
-  
+
   if (!party) {
     notFound();
   }
-  
+
   const participants = await getParticipants(partyId);
-  
+
   // Group participants by gender
   const maleParticipants = participants.filter(p => p.gender === 'male');
   const femaleParticipants = participants.filter(p => p.gender === 'female');
-  
+
   async function handleAddParticipant(data: ParticipantFormData) {
     'use server';
     
@@ -38,7 +39,7 @@ export default async function ParticipantsPage({ params }: ParticipantsPageProps
     
     redirect(`/admin/parties/${partyId}/participants`);
   }
-  
+
   async function handleGenerateAllQRCodes() {
     'use server';
     
@@ -53,14 +54,14 @@ export default async function ParticipantsPage({ params }: ParticipantsPageProps
     
     redirect(`/admin/parties/${partyId}/participants`);
   }
-  
+
   async function handleDeleteParticipant(id: string) {
     'use server';
     
     await deleteParticipant(id);
     redirect(`/admin/parties/${partyId}/participants`);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">

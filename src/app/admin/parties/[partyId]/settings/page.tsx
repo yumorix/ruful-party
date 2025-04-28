@@ -1,26 +1,27 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import SettingForm from '@/components/admin/SettingForm';
 import { getParty, getPartySetting, createOrUpdatePartySetting } from '@/lib/db/queries';
 import { PartySettingsFormData } from '@/lib/utils/validation';
 
 interface SettingsPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
-export default async function SettingsPage({ params }: SettingsPageProps) {
+export default async function SettingsPage(props: SettingsPageProps) {
+  const params = await props.params;
   const { partyId } = params;
-  
+
   const party = await getParty(partyId);
-  
+
   if (!party) {
     notFound();
   }
-  
+
   const settings = await getPartySetting(partyId);
-  
+
   async function handleSubmit(data: PartySettingsFormData) {
     'use server';
     
@@ -40,10 +41,8 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     };
     
     await createOrUpdatePartySetting(settingsData);
-    
-    redirect(`/admin/parties/${partyId}/settings`);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">

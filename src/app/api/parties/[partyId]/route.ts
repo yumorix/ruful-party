@@ -3,12 +3,13 @@ import { getParty, updateParty, deleteParty } from '@/lib/db/queries';
 import { partySchema } from '@/lib/utils/validation';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, props: RouteParams) {
+  const params = await props.params;
   try {
     const { partyId } = params;
     const party = await getParty(partyId);
@@ -30,7 +31,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, props: RouteParams) {
+  const params = await props.params;
   try {
     const { partyId } = params;
     const body = await request.json();
@@ -67,7 +69,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, props: RouteParams) {
+  const params = await props.params;
   try {
     const { partyId } = params;
     

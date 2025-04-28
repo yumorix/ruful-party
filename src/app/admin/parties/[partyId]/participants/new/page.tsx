@@ -6,20 +6,21 @@ import { ParticipantFormData } from '@/lib/utils/validation';
 import { generateAccessToken } from '@/lib/utils/token';
 
 interface NewParticipantPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
-export default async function NewParticipantPage({ params }: NewParticipantPageProps) {
+export default async function NewParticipantPage(props: NewParticipantPageProps) {
+  const params = await props.params;
   const { partyId } = params;
-  
+
   const party = await getParty(partyId);
-  
+
   if (!party) {
     notFound();
   }
-  
+
   async function handleSubmit(data: ParticipantFormData) {
     'use server';
     
@@ -31,7 +32,7 @@ export default async function NewParticipantPage({ params }: NewParticipantPageP
     
     redirect(`/admin/parties/${partyId}/participants`);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">

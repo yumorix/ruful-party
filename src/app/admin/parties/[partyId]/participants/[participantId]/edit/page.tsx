@@ -5,27 +5,28 @@ import { getParty, getParticipant, updateParticipant } from '@/lib/db/queries';
 import { ParticipantFormData } from '@/lib/utils/validation';
 
 interface EditParticipantPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
     participantId: string;
-  };
+  }>;
 }
 
-export default async function EditParticipantPage({ params }: EditParticipantPageProps) {
+export default async function EditParticipantPage(props: EditParticipantPageProps) {
+  const params = await props.params;
   const { partyId, participantId } = params;
-  
+
   const party = await getParty(partyId);
-  
+
   if (!party) {
     notFound();
   }
-  
+
   const participant = await getParticipant(participantId);
-  
+
   if (!participant || participant.party_id !== partyId) {
     notFound();
   }
-  
+
   async function handleSubmit(data: ParticipantFormData) {
     'use server';
     
@@ -33,7 +34,7 @@ export default async function EditParticipantPage({ params }: EditParticipantPag
     
     redirect(`/admin/parties/${partyId}/participants`);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">

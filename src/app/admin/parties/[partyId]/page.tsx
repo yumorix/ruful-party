@@ -5,27 +5,28 @@ import { getParty, updateParty } from '@/lib/db/queries';
 import { PartyFormData } from '@/lib/utils/validation';
 
 interface PartyPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
-export default async function PartyPage({ params }: PartyPageProps) {
+export default async function PartyPage(props: PartyPageProps) {
+  const params = await props.params;
   const { partyId } = params;
-  
+
   const party = await getParty(partyId);
-  
+
   if (!party) {
     notFound();
   }
-  
+
   async function handleSubmit(data: PartyFormData) {
     'use server';
     
     await updateParty(partyId, data);
     redirect(`/admin/parties/${partyId}`);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">
