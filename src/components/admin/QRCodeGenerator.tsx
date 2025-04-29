@@ -132,6 +132,8 @@ export default function QRCodeGenerator({
                               src={generateQRCodeUrl(participant.access_token, baseUrl)}
                               alt={`QR Code for ${participant.name}`}
                               className="w-full max-w-[200px] h-auto mx-auto"
+                              width={200}
+                              height={200}
                             />
                           </div>
                         ) : (
