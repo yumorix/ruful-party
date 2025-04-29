@@ -14,29 +14,29 @@ interface ParticipantFormProps {
   isSubmitting: boolean;
 }
 
-export default function ParticipantForm({ 
-  partyId, 
-  initialData, 
-  onSubmit, 
-  isSubmitting 
+export default function ParticipantForm({
+  partyId,
+  initialData,
+  onSubmit,
+  isSubmitting,
 }: ParticipantFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const router = useRouter();
-  
-  const { 
-    control, 
-    handleSubmit, 
-    formState: { errors } 
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
   } = useForm<ParticipantFormData>({
     resolver: zodResolver(participantSchema),
     defaultValues: {
       party_id: partyId,
       participant_number: initialData?.participant_number || 0,
       name: initialData?.name || '',
-      gender: initialData?.gender || 'male'
-    }
+      gender: initialData?.gender || 'male',
+    },
   });
-  
+
   const onFormSubmit = async (data: ParticipantFormData) => {
     try {
       setSubmitError(null);
@@ -47,14 +47,14 @@ export default function ParticipantForm({
       setSubmitError('参加者の保存中にエラーが発生しました。もう一度お試しください。');
     }
   };
-  
+
   return (
     <div className="card max-w-xl mx-auto">
       <div className="card-content">
         <h2 className="text-2xl font-semibold mb-4">
           {initialData?.id ? '参加者を編集' : '参加者を追加'}
         </h2>
-        
+
         <form onSubmit={handleSubmit(onFormSubmit)} noValidate className="space-y-6">
           <div className="space-y-4">
             <div>
@@ -74,16 +74,18 @@ export default function ParticipantForm({
                         errors.participant_number ? 'border-error-main' : 'border-gray-300'
                       }`}
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      onChange={e => field.onChange(parseInt(e.target.value) || 0)}
                     />
                     {errors.participant_number && (
-                      <p className="mt-1 text-sm text-error-main">{errors.participant_number.message}</p>
+                      <p className="mt-1 text-sm text-error-main">
+                        {errors.participant_number.message}
+                      </p>
                     )}
                   </div>
                 )}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="name"
@@ -108,7 +110,7 @@ export default function ParticipantForm({
                 )}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">性別</label>
               <Controller
@@ -144,18 +146,12 @@ export default function ParticipantForm({
               )}
             </div>
           </div>
-          
-          {submitError && (
-            <div className="text-error-main">{submitError}</div>
-          )}
-          
+
+          {submitError && <div className="text-error-main">{submitError}</div>}
+
           <div className="flex justify-end">
-            <button 
-              type="submit" 
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? '保存中...' : (initialData?.id ? '更新' : '追加')}
+            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? '保存中...' : initialData?.id ? '更新' : '追加'}
             </button>
           </div>
         </form>
