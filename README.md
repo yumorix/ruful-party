@@ -15,8 +15,76 @@
 
 - フロントエンド：Next.js (App Router）、MUI、react-hook-form + zod
 - バックエンド：Next.js Route Handlers
-- データベース：Supabase
+- データベース：Supabase (PostgreSQL)
 - デプロイ：Vercel
+- 開発言語：TypeScript
+- スタイリング：Tailwind CSS
+- パッケージマネージャー：pnpm
+
+### Supabase 構成
+
+- **認証**: Supabaseの認証機能は使用せず、独自のトークンベース認証を実装
+- **データベース**: PostgreSQL 15
+- **型安全性**: Supabase型定義を使用したTypeScriptの完全な型安全性
+- **マイグレーション**: SQLベースのマイグレーションファイル
+
+## マイグレーション方法
+
+このプロジェクトではSupabaseのマイグレーション機能を使用してデータベーススキーマを管理しています。
+
+### マイグレーションファイル
+
+マイグレーションファイルは `supabase/migrations` ディレクトリに保存されています。各ファイルは以下の命名規則に従います：
+
+```
+{timestamp}_{description}.sql
+```
+
+例: `20250428025858_initial.sql`
+
+### 新しいマイグレーションの作成
+
+1. Supabase CLIをインストールします（まだの場合）:
+   ```bash
+   npm install -g supabase
+   ```
+
+2. 新しいマイグレーションファイルを作成します:
+   ```bash
+   supabase migration new {description}
+   ```
+
+3. 生成されたSQLファイルにスキーマの変更を記述します。
+
+### マイグレーションの適用
+
+ローカル開発環境でマイグレーションを適用するには:
+
+```bash
+supabase db reset
+```
+
+または、特定のマイグレーションまで適用するには:
+
+```bash
+supabase db reset --target-version {version}
+```
+
+### 本番環境へのデプロイ
+
+Vercelへのデプロイ時に、Supabaseプロジェクトに対してマイグレーションを適用します:
+
+```bash
+supabase db push
+```
+
+### 型の生成
+
+データベーススキーマから最新のTypeScript型定義を生成するには:
+
+```bash
+supabase gen types typescript --local > src/lib/db/database.types.ts
+```
 
 ## 開発環境のセットアップ
 
@@ -117,6 +185,3 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 - **matches**: マッチング結果
 - **seating_plans**: 席替え計画
 
-## ライセンス
-
-MIT
