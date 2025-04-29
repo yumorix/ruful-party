@@ -149,11 +149,24 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
       <div className="bg-white rounded-lg shadow p-6 mb-8">
         <h2 className="text-lg font-semibold mb-2">
           現在のモード:{' '}
-          {party.current_mode === 'interim'
-            ? '中間投票'
-            : party.current_mode === 'final'
-              ? '最終投票'
-              : 'クローズ'}
+          <span
+            className={`
+            inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+            ${
+              party.current_mode === 'interim'
+                ? 'bg-blue-100 text-blue-800'
+                : party.current_mode === 'final'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-gray-100 text-gray-800'
+            }
+          `}
+          >
+            {party.current_mode === 'interim'
+              ? '中間投票'
+              : party.current_mode === 'final'
+                ? '最終投票'
+                : 'クローズ'}
+          </span>
         </h2>
 
         <div className="flex gap-4 mt-4">
@@ -161,8 +174,8 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
             <button
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 party.current_mode === 'interim'
-                  ? 'bg-primary-main text-white'
-                  : 'border border-primary-main text-primary-main hover:bg-gray-50'
+                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  : 'border border-blue-300 text-blue-800 hover:bg-blue-50'
               }`}
               type="submit"
             >
@@ -173,8 +186,8 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
             <button
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 party.current_mode === 'final'
-                  ? 'bg-secondary-main text-white'
-                  : 'border border-secondary-main text-secondary-main hover:bg-gray-50'
+                  ? 'bg-red-100 text-red-800 border border-red-300'
+                  : 'border border-red-300 text-red-800 hover:bg-red-50'
               }`}
               type="submit"
             >
@@ -185,8 +198,8 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
             <button
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 party.current_mode === 'closed'
-                  ? 'bg-error-main text-white'
-                  : 'border border-error-main text-error-main hover:bg-gray-50'
+                  ? 'bg-gray-100 text-gray-800 border border-gray-300'
+                  : 'border border-gray-300 text-gray-800 hover:bg-gray-50'
               }`}
               type="submit"
             >
