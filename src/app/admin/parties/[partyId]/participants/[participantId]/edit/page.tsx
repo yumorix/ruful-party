@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ParticipantForm from '@/components/admin/ParticipantForm';
 import { getParty, getParticipant, updateParticipant } from '@/lib/db/queries';
