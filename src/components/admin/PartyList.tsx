@@ -182,7 +182,7 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
                 </Link>
                 <button
                   onClick={() => handleDeleteClick(party)}
-                  className="icon-button text-error-main"
+                  className="icon-button text-red-400 hover:text-red-500"
                   title="削除"
                 >
                   <svg
@@ -224,7 +224,11 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
               >
                 キャンセル
               </button>
-              <button onClick={handleDeleteConfirm} disabled={isDeleting} className="btn btn-error">
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+                className="btn bg-red-400 text-white hover:bg-red-500"
+              >
                 {isDeleting ? '削除中...' : '削除'}
               </button>
             </div>

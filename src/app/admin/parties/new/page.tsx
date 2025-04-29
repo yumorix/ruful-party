@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import PartyForm from '@/components/admin/PartyForm';
 import { createParty } from '@/lib/db/queries';
@@ -7,11 +6,10 @@ import { PartyFormData } from '@/lib/utils/validation';
 export default function NewPartyPage() {
   async function handleSubmit(data: PartyFormData) {
     'use server';
-    
-    const newParty = await createParty(data);
-    redirect(`/admin/parties/${newParty.id}`);
+
+    await createParty(data);
   }
-  
+
   return (
     <div>
       <nav className="mb-6" aria-label="breadcrumb">
@@ -21,16 +19,11 @@ export default function NewPartyPage() {
               パーティ一覧
             </Link>
           </li>
-          <li className="text-text-primary before:content-['/'] before:mx-2">
-            新規パーティ
-          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">新規パーティ</li>
         </ol>
       </nav>
-      
-      <PartyForm 
-        onSubmit={handleSubmit}
-        isSubmitting={false}
-      />
+
+      <PartyForm onSubmit={handleSubmit} isSubmitting={false} />
     </div>
   );
 }
