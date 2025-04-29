@@ -1,9 +1,8 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getParty, getParticipants, createParticipant, updateParticipant, deleteParticipant } from '@/lib/db/queries';
-import { ParticipantFormData } from '@/lib/utils/validation';
+import { getParty, getParticipants, updateParticipant } from '@/lib/db/queries';
+// import { ParticipantFormData } from '@/lib/utils/validation';
 import { generateAccessToken } from '@/lib/utils/token';
-import ParticipantForm from '@/components/admin/ParticipantForm';
 import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
 
 interface ParticipantsPageProps {
@@ -27,18 +26,6 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
   // Group participants by gender
   const maleParticipants = participants.filter(p => p.gender === 'male');
   const femaleParticipants = participants.filter(p => p.gender === 'female');
-
-  async function handleAddParticipant(data: ParticipantFormData) {
-    'use server';
-    
-    await createParticipant({
-      ...data,
-      party_id: partyId,
-      access_token: generateAccessToken(partyId, data.name)
-    });
-    
-    redirect(`/admin/parties/${partyId}/participants`);
-  }
 
   async function handleGenerateAllQRCodes() {
     'use server';

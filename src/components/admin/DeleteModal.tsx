@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface DeleteModalProps {
   itemType: string;
@@ -18,7 +17,6 @@ export default function DeleteModal({
 }: DeleteModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
 
   const handleOpen = () => {
     setIsOpen(true);

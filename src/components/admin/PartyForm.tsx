@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parse } from 'date-fns';
-import { ja } from 'date-fns/locale/ja';
 import { partySchema, PartyFormData } from '@/lib/utils/validation';
 import { Party } from '@/lib/db/supabase';
 import { useRouter } from 'next/navigation';

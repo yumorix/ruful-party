@@ -15,13 +15,13 @@ import { generateMatches } from '@/lib/ai/matchingEngine';
 import { generateSeatingPlan } from '@/lib/ai/seatingPlanner';
 
 interface MatchingPageProps {
-  params: {
+  params: Promise<{
     partyId: string;
-  };
+  }>;
 }
 
 export default async function MatchingPage({ params }: MatchingPageProps) {
-  const { partyId } = params;
+  const { partyId } = await params;
   
   const party = await getParty(partyId);
   
@@ -36,10 +36,10 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
   const interimMatches = await getMatches(partyId, 'interim');
   const finalMatches = await getMatches(partyId, 'final');
   const interimSeatingPlan = await getSeatingPlan(partyId, 'interim');
-  const finalSeatingPlan = await getSeatingPlan(partyId, 'final');
+  // const finalSeatingPlan = await getSeatingPlan(partyId, 'final');
   
-  const maleParticipants = participants.filter(p => p.gender === 'male');
-  const femaleParticipants = participants.filter(p => p.gender === 'female');
+  // const maleParticipants = participants.filter(p => p.gender === 'male');
+  // const femaleParticipants = participants.filter(p => p.gender === 'female');
   
   async function handleGenerateInterimMatches() {
     'use server';
@@ -72,7 +72,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
     await createOrUpdateSeatingPlan({
       party_id: partyId,
       plan_type: 'interim',
-      layout_data: seatingPlanResult.layoutData,
+      layout_data: JSON.parse(JSON.stringify(seatingPlanResult.layoutData)),
       image_url: ''
     });
     
@@ -90,7 +90,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
     const matchingResult = await generateMatches(participants, finalVotes, 'final');
     
     // Create match records
-    const matchesToCreate = matchingResult.pairs.map(([p1Id, p2Id], index) => ({
+    const matchesToCreate = matchingResult.pairs.map(([p1Id, p2Id]) => ({
       party_id: partyId,
       match_type: 'final' as const,
       participant1_id: p1Id,
@@ -107,7 +107,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
     await createOrUpdateSeatingPlan({
       party_id: partyId,
       plan_type: 'final',
-      layout_data: seatingPlanResult.layoutData,
+      layout_data: JSON.parse(JSON.stringify(seatingPlanResult.layoutData)),
       image_url: ''
     });
     

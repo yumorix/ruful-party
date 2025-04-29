@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getParticipantByToken, getParty, createVote, getVotes } from '@/lib/db/queries';
-import { voteSchema } from '@/lib/utils/validation';
 
 export async function POST(request: NextRequest) {
   try {

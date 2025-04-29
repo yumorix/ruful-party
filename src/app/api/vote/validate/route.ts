@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Get eligible participants to vote for (opposite gender)
-    const eligibleParticipants = await getParticipantByToken(token);
+    // const eligibleParticipants = await getParticipantByToken(token);
     
     return NextResponse.json({
       valid: true,

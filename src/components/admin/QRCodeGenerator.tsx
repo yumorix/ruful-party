@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Participant } from '@/lib/db/supabase';
 import { generateQRCodeUrl } from '@/lib/utils/token';
+import Image from 'next/image';
 
 interface QRCodeGeneratorProps {
   participants: Participant[];
@@ -127,7 +128,7 @@ export default function QRCodeGenerator({
                         
                         {participant.access_token ? (
                           <div className="mt-4 text-center">
-                            <img 
+                            <Image 
                               src={generateQRCodeUrl(participant.access_token, baseUrl)}
                               alt={`QR Code for ${participant.name}`}
                               className="w-full max-w-[200px] h-auto mx-auto"

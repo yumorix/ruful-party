@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale/ja';
@@ -13,7 +12,6 @@ interface PartyListProps {
 }
 
 export default function PartyList({ parties, onDelete }: PartyListProps) {
-  const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [partyToDelete, setPartyToDelete] = useState<Party | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
