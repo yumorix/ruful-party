@@ -29,10 +29,8 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
 
   async function handleSubmit(data: ParticipantFormData) {
     'use server';
-    
+
     await updateParticipant(participantId, data);
-    
-    redirect(`/admin/parties/${partyId}/participants`);
   }
 
   return (
@@ -50,7 +48,10 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}/participants`} className="text-primary-main hover:underline">
+            <Link
+              href={`/admin/parties/${partyId}/participants`}
+              className="text-primary-main hover:underline"
+            >
               参加者管理
             </Link>
           </li>
@@ -59,8 +60,8 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
           </li>
         </ol>
       </nav>
-      
-      <ParticipantForm 
+
+      <ParticipantForm
         partyId={partyId}
         initialData={participant}
         onSubmit={handleSubmit}
