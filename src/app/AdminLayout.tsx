@@ -41,9 +41,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <ul>
             <li>
               <Link
-                href="/admin/parties"
+                href="/parties"
                 className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                  isActive('/admin/parties') ? 'bg-primary-main text-white' : 'hover:bg-gray-100'
+                  isActive('/parties') ? 'bg-primary-main text-white' : 'hover:bg-gray-100'
                 }`}
               >
                 <svg

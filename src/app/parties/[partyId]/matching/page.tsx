@@ -76,7 +76,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
       image_url: '',
     });
 
-    redirect(`/admin/parties/${partyId}/matching`);
+    redirect(`/parties/${partyId}/matching`);
   }
 
   async function handleGenerateFinalMatches() {
@@ -111,7 +111,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
       image_url: '',
     });
 
-    redirect(`/admin/parties/${partyId}/matching`);
+    redirect(`/parties/${partyId}/matching`);
   }
 
   async function handleChangeMode(mode: 'interim' | 'final' | 'closed') {
@@ -121,7 +121,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
       current_mode: mode,
     });
 
-    redirect(`/admin/parties/${partyId}/matching`);
+    redirect(`/parties/${partyId}/matching`);
   }
 
   return (
@@ -129,12 +129,12 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
       <nav className="mb-6" aria-label="breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href="/admin/parties" className="text-primary-main hover:underline">
+            <Link href="/parties" className="text-primary-main hover:underline">
               パーティ一覧
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+            <Link href={`/parties/${partyId}`} className="text-primary-main hover:underline">
               {party.name}
             </Link>
           </li>

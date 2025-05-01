@@ -38,18 +38,18 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
       <nav className="mb-6" aria-label="breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href="/admin/parties" className="text-primary-main hover:underline">
+            <Link href="/parties" className="text-primary-main hover:underline">
               パーティ一覧
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+            <Link href={`/parties/${partyId}`} className="text-primary-main hover:underline">
               {party.name}
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
             <Link
-              href={`/admin/parties/${partyId}/participants`}
+              href={`/parties/${partyId}/participants`}
               className="text-primary-main hover:underline"
             >
               参加者管理

@@ -23,11 +23,11 @@ export default async function NewParticipantPage(props: NewParticipantPageProps)
 
   async function handleSubmit(data: ParticipantFormData) {
     'use server';
-    
+
     await createParticipant({
       ...data,
       party_id: partyId,
-      access_token: generateAccessToken(partyId, data.name)
+      access_token: generateAccessToken(partyId, data.name),
     });
   }
 
@@ -36,31 +36,28 @@ export default async function NewParticipantPage(props: NewParticipantPageProps)
       <nav className="mb-6" aria-label="breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href="/admin/parties" className="text-primary-main hover:underline">
+            <Link href="/parties" className="text-primary-main hover:underline">
               パーティ一覧
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+            <Link href={`/parties/${partyId}`} className="text-primary-main hover:underline">
               {party.name}
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}/participants`} className="text-primary-main hover:underline">
+            <Link
+              href={`/parties/${partyId}/participants`}
+              className="text-primary-main hover:underline"
+            >
               参加者管理
             </Link>
           </li>
-          <li className="text-text-primary before:content-['/'] before:mx-2">
-            参加者を追加
-          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">参加者を追加</li>
         </ol>
       </nav>
-      
-      <ParticipantForm 
-        partyId={partyId}
-        onSubmit={handleSubmit}
-        isSubmitting={false}
-      />
+
+      <ParticipantForm partyId={partyId} onSubmit={handleSubmit} isSubmitting={false} />
     </div>
   );
 }

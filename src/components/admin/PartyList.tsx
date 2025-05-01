@@ -70,7 +70,7 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">パーティ一覧</h1>
-        <Link href="/admin/parties/new" className="btn btn-primary flex items-center">
+        <Link href="/parties/new" className="btn btn-primary flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 mr-1"
@@ -117,7 +117,7 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
               </div>
               <div className="card-actions justify-end">
                 <Link
-                  href={`/admin/parties/${party.id}/participants`}
+                  href={`/parties/${party.id}/participants`}
                   className="icon-button"
                   title="参加者管理"
                 >
@@ -136,11 +136,7 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
                     />
                   </svg>
                 </Link>
-                <Link
-                  href={`/admin/parties/${party.id}/settings`}
-                  className="icon-button"
-                  title="設定"
-                >
+                <Link href={`/parties/${party.id}/settings`} className="icon-button" title="設定">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -163,7 +159,7 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
                   </svg>
                 </Link>
                 {/* <Link
-                  href={`/admin/parties/${party.id}/matching`}
+                  href={`/parties/${party.id}/matching`}
                   className="icon-button"
                   title="マッチング"
                 >
@@ -171,13 +167,10 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
                 </Link> */}
-                <Link href={`/admin/parties/${party.id}`} className="btn btn-sm btn-outlined mr-2">
+                <Link href={`/parties/${party.id}`} className="btn btn-sm btn-outlined mr-2">
                   詳細
                 </Link>
-                <Link
-                  href={`/admin/parties/${party.id}/edit`}
-                  className="btn btn-sm btn-outlined mr-2"
-                >
+                <Link href={`/parties/${party.id}/edit`} className="btn btn-sm btn-outlined mr-2">
                   編集
                 </Link>
                 <button

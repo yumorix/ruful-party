@@ -15,7 +15,7 @@ export default function NewPartyPage() {
       <nav className="mb-6" aria-label="breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href="/admin/parties" className="text-primary-main hover:underline">
+            <Link href="/parties" className="text-primary-main hover:underline">
               パーティ一覧
             </Link>
           </li>

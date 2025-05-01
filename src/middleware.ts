@@ -3,8 +3,8 @@ import type { NextRequest } from 'next/server';
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  // Check if the path starts with /admin
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Check if the path starts with /parties
+  if (request.nextUrl.pathname.startsWith('/parties')) {
     // Skip authentication for localhost
     const host = request.headers.get('host') || '';
     const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
@@ -56,5 +56,5 @@ function isValidAuthHeader(authHeader: string): boolean {
 
 // Configure the middleware to run only on specific paths
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/parties/:path*'],
 };

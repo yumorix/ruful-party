@@ -14,18 +14,14 @@ interface PartyFormProps {
   isSubmitting: boolean;
 }
 
-export default function PartyForm({ 
-  initialData, 
-  onSubmit, 
-  isSubmitting 
-}: PartyFormProps) {
+export default function PartyForm({ initialData, onSubmit, isSubmitting }: PartyFormProps) {
   const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
-  
-  const { 
-    control, 
-    handleSubmit, 
-    formState: { errors } 
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
   } = useForm<PartyFormData>({
     resolver: zodResolver(partySchema),
     defaultValues: {
@@ -34,28 +30,28 @@ export default function PartyForm({
       location: initialData?.location || '',
       capacity: initialData?.capacity || 20,
       status: initialData?.status || 'preparing',
-      current_mode: initialData?.current_mode || 'closed'
-    }
+      current_mode: initialData?.current_mode || 'closed',
+    },
   });
-  
+
   const onFormSubmit = async (formData: PartyFormData) => {
     try {
       setSubmitError(null);
       await onSubmit(formData);
-      router.push(`/admin/parties/${initialData?.id}`);
+      router.push(`/parties/${initialData?.id}`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('パーティの保存中にエラーが発生しました。もう一度お試しください。');
     }
   };
-  
+
   return (
     <div className="card max-w-xl mx-auto">
       <div className="card-content">
         <h2 className="text-2xl font-semibold mb-4">
           {initialData?.id ? 'パーティを編集' : '新規パーティを作成'}
         </h2>
-        
+
         <form onSubmit={handleSubmit(onFormSubmit)} noValidate className="space-y-6">
           <div className="space-y-4">
             <div>
@@ -82,7 +78,7 @@ export default function PartyForm({
                 )}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="date"
@@ -92,7 +88,7 @@ export default function PartyForm({
                   const dateValue = field.value ? new Date(field.value) : new Date();
                   const dateString = format(dateValue, 'yyyy-MM-dd');
                   const timeString = format(dateValue, 'HH:mm');
-                  
+
                   return (
                     <div>
                       <label htmlFor="date" className="block text-sm font-medium mb-1">
@@ -106,7 +102,7 @@ export default function PartyForm({
                             errors.date ? 'border-error-main' : 'border-gray-300'
                           }`}
                           value={dateString}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newDate = parse(
                               `${e.target.value} ${timeString}`,
                               'yyyy-MM-dd HH:mm',
@@ -122,7 +118,7 @@ export default function PartyForm({
                             errors.date ? 'border-error-main' : 'border-gray-300'
                           }`}
                           value={timeString}
-                          onChange={(e) => {
+                          onChange={e => {
                             const newDate = parse(
                               `${dateString} ${e.target.value}`,
                               'yyyy-MM-dd HH:mm',
@@ -140,7 +136,7 @@ export default function PartyForm({
                 }}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="location"
@@ -165,7 +161,7 @@ export default function PartyForm({
                 )}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="capacity"
@@ -183,7 +179,7 @@ export default function PartyForm({
                         errors.capacity ? 'border-error-main' : 'border-gray-300'
                       }`}
                       {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                      onChange={e => field.onChange(parseInt(e.target.value) || 0)}
                     />
                     {errors.capacity && (
                       <p className="mt-1 text-sm text-error-main">{errors.capacity.message}</p>
@@ -192,7 +188,7 @@ export default function PartyForm({
                 )}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="status"
@@ -220,7 +216,7 @@ export default function PartyForm({
                 )}
               />
             </div>
-            
+
             <div>
               <Controller
                 name="current_mode"
@@ -249,18 +245,12 @@ export default function PartyForm({
               />
             </div>
           </div>
-          
-          {submitError && (
-            <div className="text-error-main">{submitError}</div>
-          )}
-          
+
+          {submitError && <div className="text-error-main">{submitError}</div>}
+
           <div className="flex justify-end">
-            <button 
-              type="submit" 
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? '保存中...' : (initialData?.id ? '更新' : '作成')}
+            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? '保存中...' : initialData?.id ? '更新' : '作成'}
             </button>
           </div>
         </form>

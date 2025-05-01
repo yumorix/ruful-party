@@ -41,7 +41,7 @@ export default function ParticipantForm({
     try {
       setSubmitError(null);
       await onSubmit(data);
-      router.push(`/admin/parties/${partyId}/participants`);
+      router.push(`/parties/${partyId}/participants`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('参加者の保存中にエラーが発生しました。もう一度お試しください。');

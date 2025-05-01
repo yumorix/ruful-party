@@ -24,7 +24,7 @@ export default async function SettingsPage(props: SettingsPageProps) {
 
   async function handleSubmit(data: PartySettingsFormData) {
     'use server';
-    
+
     // Ensure all required fields are present
     const settingsData = {
       party_id: partyId,
@@ -32,14 +32,14 @@ export default async function SettingsPage(props: SettingsPageProps) {
       matching_rule: data.matching_rule || {
         prioritizeMutualMatches: true,
         considerVoteRanking: true,
-        balanceGenderRatio: true
+        balanceGenderRatio: true,
       },
       gender_rules: data.gender_rules || {
         requireMixedGender: true,
-        alternateSeating: true
-      }
+        alternateSeating: true,
+      },
     };
-    
+
     await createOrUpdatePartySetting(settingsData);
   }
 
@@ -48,28 +48,24 @@ export default async function SettingsPage(props: SettingsPageProps) {
       <nav className="mb-6" aria-label="breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href="/admin/parties" className="text-primary-main hover:underline">
+            <Link href="/parties" className="text-primary-main hover:underline">
               パーティ一覧
             </Link>
           </li>
           <li className="before:content-['/'] before:mx-2">
-            <Link href={`/admin/parties/${partyId}`} className="text-primary-main hover:underline">
+            <Link href={`/parties/${partyId}`} className="text-primary-main hover:underline">
               {party.name}
             </Link>
           </li>
-          <li className="text-text-primary before:content-['/'] before:mx-2">
-            設定
-          </li>
+          <li className="text-text-primary before:content-['/'] before:mx-2">設定</li>
         </ol>
       </nav>
-      
+
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">
-          パーティ設定
-        </h1>
+        <h1 className="text-2xl font-bold">パーティ設定</h1>
       </div>
-      
-      <SettingForm 
+
+      <SettingForm
         partyId={partyId}
         initialData={settings || undefined}
         onSubmit={handleSubmit}

@@ -9,16 +9,16 @@ interface DeleteParticipantButtonProps {
   participantName: string;
 }
 
-export default function DeleteParticipantButton({ 
-  partyId, 
-  participantId, 
-  participantName 
+export default function DeleteParticipantButton({
+  partyId,
+  participantId,
+  participantName,
 }: DeleteParticipantButtonProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/admin/participants/${participantId}`, {
+      const response = await fetch(`/api/parties/${partyId}/participants/${participantId}`, {
         method: 'DELETE',
       });
 
@@ -26,7 +26,7 @@ export default function DeleteParticipantButton({
         throw new Error('Failed to delete participant');
       }
 
-      router.push(`/admin/parties/${partyId}/participants`);
+      router.push(`/parties/${partyId}/participants`);
       router.refresh();
     } catch (error) {
       console.error('Error deleting participant:', error);
@@ -34,11 +34,5 @@ export default function DeleteParticipantButton({
     }
   };
 
-  return (
-    <DeleteModal
-      itemType="参加者"
-      itemName={participantName}
-      deleteAction={handleDelete}
-    />
-  );
+  return <DeleteModal itemType="参加者" itemName={participantName} deleteAction={handleDelete} />;
 }

@@ -21,7 +21,7 @@ export default function DeletePartyButton({ partyId, partyName }: DeletePartyBut
         throw new Error('Failed to delete party');
       }
 
-      router.push('/admin/parties');
+      router.push('/parties');
       router.refresh();
     } catch (error) {
       console.error('Error deleting party:', error);
@@ -29,11 +29,5 @@ export default function DeletePartyButton({ partyId, partyName }: DeletePartyBut
     }
   };
 
-  return (
-    <DeleteModal
-      itemType="パーティ"
-      itemName={partyName}
-      deleteAction={handleDelete}
-    />
-  );
+  return <DeleteModal itemType="パーティ" itemName={partyName} deleteAction={handleDelete} />;
 }
