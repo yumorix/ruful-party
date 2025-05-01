@@ -7,6 +7,7 @@ interface DeleteModalProps {
   itemName: string;
   deleteAction: () => Promise<void>;
   cancelAction?: () => void;
+  className?: string;
 }
 
 export default function DeleteModal({
@@ -14,6 +15,7 @@ export default function DeleteModal({
   itemName,
   deleteAction,
   cancelAction,
+  className,
 }: DeleteModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -44,7 +46,10 @@ export default function DeleteModal({
     <>
       <button
         onClick={handleOpen}
-        className="inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-lg font-medium hover:bg-red-500 transition-colors duration-200"
+        className={
+          className ||
+          'inline-flex items-center px-4 py-2 bg-red-400 text-white rounded-lg font-medium hover:bg-red-500 transition-colors duration-200'
+        }
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

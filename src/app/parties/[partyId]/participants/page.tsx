@@ -4,6 +4,7 @@ import { getParty, getParticipants, updateParticipant } from '@/lib/db/queries';
 // import { ParticipantFormData } from '@/lib/utils/validation';
 import { generateAccessToken } from '@/lib/utils/token';
 import QRCodeGenerator from '@/components/admin/QRCodeGenerator';
+import DeleteParticipantButton from '@/components/admin/DeleteParticipantButton';
 
 interface ParticipantsPageProps {
   params: Promise<{
@@ -161,7 +162,7 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                           </Link>
                           <Link
                             href={`/parties/${partyId}/participants/${participant.id}/edit`}
-                            className="btn btn-xs btn-outlined"
+                            className="btn btn-xs btn-outlined mr-2"
                           >
                             編集
                           </Link>
@@ -243,10 +244,16 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
                           </Link>
                           <Link
                             href={`/parties/${partyId}/participants/${participant.id}/edit`}
-                            className="btn btn-xs btn-outlined"
+                            className="btn btn-xs btn-outlined mr-2"
                           >
                             編集
                           </Link>
+                          <DeleteParticipantButton
+                            partyId={partyId}
+                            participantId={participant.id}
+                            participantName={participant.name}
+                            className="btn btn-xs btn-outlined text-red-500 hover:bg-red-50"
+                          />
                         </td>
                       </tr>
                     ))

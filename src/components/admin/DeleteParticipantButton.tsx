@@ -7,12 +7,14 @@ interface DeleteParticipantButtonProps {
   partyId: string;
   participantId: string;
   participantName: string;
+  className?: string;
 }
 
 export default function DeleteParticipantButton({
   partyId,
   participantId,
   participantName,
+  className,
 }: DeleteParticipantButtonProps) {
   const router = useRouter();
 
@@ -34,5 +36,12 @@ export default function DeleteParticipantButton({
     }
   };
 
-  return <DeleteModal itemType="参加者" itemName={participantName} deleteAction={handleDelete} />;
+  return (
+    <DeleteModal
+      itemType="参加者"
+      itemName={participantName}
+      deleteAction={handleDelete}
+      className={className}
+    />
+  );
 }
