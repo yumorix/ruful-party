@@ -4,7 +4,6 @@ import { getParty, getParticipants, updateParticipant } from '../../../../lib/db
 // import { ParticipantFormData } from '@/lib/utils/validation';
 import { generateAccessToken } from '../../../../lib/utils/token';
 import QRCodeGenerator from '../../../../components/admin/QRCodeGenerator';
-import DeleteParticipantButton from '../../../../components/admin/DeleteParticipantButton';
 
 interface ParticipantsPageProps {
   params: Promise<{

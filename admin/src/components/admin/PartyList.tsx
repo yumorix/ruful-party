@@ -16,11 +16,6 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
   const [partyToDelete, setPartyToDelete] = useState<Party | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleDeleteClick = (party: Party) => {
-    setPartyToDelete(party);
-    setDeleteDialogOpen(true);
-  };
-
   const handleDeleteConfirm = async () => {
     if (!partyToDelete) return;
 
@@ -163,8 +158,19 @@ export default function PartyList({ parties, onDelete }: PartyListProps) {
                   className="icon-button"
                   title="マッチング"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                    />
                   </svg>
                 </Link>
                 <Link href={`/parties/${party.id}`} className="btn btn-sm btn-outlined mr-2">
