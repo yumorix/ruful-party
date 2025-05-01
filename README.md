@@ -5,7 +5,7 @@
 ## 機能
 
 - 複数パーティを個別に作成・管理
-- パーティごとの参加者登録
+- パーティごとの参加者登録・削除
 - パーティごとのマッチング設定
 - 中間マッチング投票と席替え案の生成
 - 最終マッチング投票とカップル組み合わせの決定
@@ -122,28 +122,34 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
     /api                    # API Route Handlers
       /parties
         /[partyId]/route.ts
+        /[partyId]/participants/[participantId]/route.ts
         /route.ts
       /vote
         /validate/route.ts
         /submit/route.ts
       /admin
         /participants/route.ts
+        /participants/[participantId]/route.ts
         /settings/route.ts
         /matching/route.ts
-    /admin                  # 管理者ページ
+    /parties                # パーティ管理
       /page.tsx
-      /parties              # パーティ管理
-        /page.tsx
-        /new/page.tsx
-        /[partyId]/page.tsx
-        /[partyId]/participants/page.tsx
-        /[partyId]/settings/page.tsx
-        /[partyId]/matching/page.tsx
+      /new/page.tsx
+      /[partyId]/page.tsx
+      /[partyId]/participants/page.tsx
+      /[partyId]/participants/[participantId]/page.tsx
+      /[partyId]/participants/[participantId]/edit/page.tsx
+      /[partyId]/participants/new/page.tsx
+      /[partyId]/settings/page.tsx
+      /[partyId]/matching/page.tsx
   /components               # UIコンポーネント
     /admin
       /PartyForm.tsx
       /PartyList.tsx
       /ParticipantForm.tsx
+      /DeleteParticipantButton.tsx
+      /DeletePartyButton.tsx
+      /DeleteModal.tsx
       /SettingForm.tsx
       /QRCodeGenerator.tsx
   /lib                      # ユーティリティ関数
@@ -176,6 +182,12 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 3. 席替え後、最終投票で気になった異性の参加者番号を選択します（最大3人）。
 4. 最終マッチング結果を確認します。
 
+### 参加者の削除
+
+1. 参加者一覧ページから削除ボタンをクリックします。
+2. または、参加者詳細ページから削除ボタンをクリックします。
+3. 確認ダイアログで「削除」をクリックすると参加者が削除されます。
+
 ## データベース構造
 
 - **parties**: パーティ情報
@@ -184,4 +196,3 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 - **party_settings**: パーティごとの設定
 - **matches**: マッチング結果
 - **seating_plans**: 席替え計画
-
