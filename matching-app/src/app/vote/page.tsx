@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Participant {
   id: string;
@@ -19,20 +19,22 @@ interface VoteOption {
   id: string;
   name: string;
   gender: string;
-  selected: boolean;
-  rank: number | null;
+  participant_number: number;
 }
 
 export default function VotePage() {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const token = params.token as string;
+  const token = searchParams.get('token');
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [participant, setParticipant] = useState<Participant | null>(null);
   const [party, setParty] = useState<Party | null>(null);
   const [voteOptions, setVoteOptions] = useState<VoteOption[]>([]);
+  const [firstChoice, setFirstChoice] = useState<string>('');
+  const [secondChoice, setSecondChoice] = useState<string>('');
+  const [thirdChoice, setThirdChoice] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -81,8 +83,7 @@ export default function VotePage() {
             id: p.id,
             name: p.name,
             gender: p.gender,
-            selected: false,
-            rank: null,
+            participant_number: p.participant_number,
           }))
         );
 
@@ -97,42 +98,34 @@ export default function VotePage() {
     validateToken();
   }, [token]);
 
-  const handleVoteSelection = (id: string) => {
-    if (submitting || submitted) return;
+  // Handle selection changes
+  const handleFirstChoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setFirstChoice(value);
 
-    setVoteOptions(prev => {
-      const selectedCount = prev.filter(option => option.selected).length;
-      const option = prev.find(opt => opt.id === id);
+    // If the new selection is the same as second or third choice, clear those choices
+    if (value === secondChoice) setSecondChoice('');
+    if (value === thirdChoice) setThirdChoice('');
+  };
 
-      if (!option) return prev;
+  const handleSecondChoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSecondChoice(value);
 
-      // If already selected, deselect
-      if (option.selected) {
-        const updated = prev.map(opt => {
-          if (opt.id === id) {
-            return { ...opt, selected: false, rank: null };
-          }
-          // Reorder ranks for remaining selected options
-          if (opt.selected && opt.rank && opt.rank > option.rank!) {
-            return { ...opt, rank: opt.rank - 1 };
-          }
-          return opt;
-        });
-        return updated;
-      }
+    // If the new selection is the same as first or third choice, clear third choice
+    if (value === firstChoice) {
+      setFirstChoice('');
+    }
+    if (value === thirdChoice) setThirdChoice('');
+  };
 
-      // If not selected and we haven't reached the limit of 3
-      if (selectedCount < 3) {
-        return prev.map(opt => {
-          if (opt.id === id) {
-            return { ...opt, selected: true, rank: selectedCount + 1 };
-          }
-          return opt;
-        });
-      }
+  const handleThirdChoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setThirdChoice(value);
 
-      return prev;
-    });
+    // If the new selection is the same as first or second choice, clear those choices
+    if (value === firstChoice) setFirstChoice('');
+    if (value === secondChoice) setSecondChoice('');
   };
 
   const handleSubmit = async () => {
@@ -141,12 +134,28 @@ export default function VotePage() {
     setSubmitting(true);
 
     try {
-      const selectedVotes = voteOptions
-        .filter(option => option.selected)
-        .map(option => ({
-          voted_id: option.id,
-          rank: option.rank,
-        }));
+      const selectedVotes = [];
+
+      if (firstChoice) {
+        selectedVotes.push({
+          voted_id: firstChoice,
+          rank: 1,
+        });
+      }
+
+      if (secondChoice) {
+        selectedVotes.push({
+          voted_id: secondChoice,
+          rank: 2,
+        });
+      }
+
+      if (thirdChoice) {
+        selectedVotes.push({
+          voted_id: thirdChoice,
+          rank: 3,
+        });
+      }
 
       if (selectedVotes.length === 0) {
         setError('少なくとも1人は選択してください');
@@ -178,7 +187,7 @@ export default function VotePage() {
 
       // Redirect to result page after successful submission
       setTimeout(() => {
-        router.push(`/result/${token}`);
+        router.push(`/result?token=${token}`);
       }, 3000);
     } catch (err) {
       console.error('Vote submission error:', err);
@@ -250,39 +259,74 @@ export default function VotePage() {
           {voteOptions.length === 0 ? (
             <p className="text-center text-gray-500">投票対象者がいません</p>
           ) : (
-            <ul className="space-y-2">
-              {voteOptions.map(option => (
-                <li
-                  key={option.id}
-                  className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                    option.selected
-                      ? 'border-primary-main bg-primary-main bg-opacity-10'
-                      : 'border-gray-200 hover:bg-gray-50'
-                  }`}
-                  onClick={() => handleVoteSelection(option.id)}
+            <div className="space-y-4">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">1人目</label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-main text-black"
+                  value={firstChoice}
+                  onChange={handleFirstChoiceChange}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-medium">{option.name}</span>
-                    </div>
-                    {option.selected && (
-                      <div className="bg-primary-main text-white rounded-full w-6 h-6 flex items-center justify-center">
-                        {option.rank}
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  <option value="">選択してください</option>
+                  {voteOptions.map(option => (
+                    <option key={`first-${option.id}`} value={option.id}>
+                      {option.participant_number}番
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">2人目</label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-main text-black"
+                  value={secondChoice}
+                  onChange={handleSecondChoiceChange}
+                  disabled={!firstChoice}
+                >
+                  <option value="">選択してください</option>
+                  {voteOptions.map(option => (
+                    <option
+                      key={`second-${option.id}`}
+                      value={option.id}
+                      disabled={option.id === firstChoice}
+                    >
+                      {option.participant_number}番
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">3人目</label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-main text-black"
+                  value={thirdChoice}
+                  onChange={handleThirdChoiceChange}
+                  disabled={!secondChoice}
+                >
+                  <option value="">選択してください</option>
+                  {voteOptions.map(option => (
+                    <option
+                      key={`third-${option.id}`}
+                      value={option.id}
+                      disabled={option.id === firstChoice || option.id === secondChoice}
+                    >
+                      {option.participant_number}番
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           )}
         </div>
       </div>
 
       <button
         onClick={handleSubmit}
-        disabled={submitting || voteOptions.filter(o => o.selected).length === 0}
+        disabled={submitting || (!firstChoice && !secondChoice && !thirdChoice)}
         className={`btn ${
-          submitting || voteOptions.filter(o => o.selected).length === 0
+          submitting || (!firstChoice && !secondChoice && !thirdChoice)
             ? 'bg-gray-300 cursor-not-allowed'
             : 'btn-primary'
         } w-full max-w-md`}

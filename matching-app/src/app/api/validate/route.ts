@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/db/supabase';
-import { isValidTokenFormat } from '@/lib/utils/token';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { token } = body;
 
-    if (!token || !isValidTokenFormat(token)) {
-      return NextResponse.json(
-        { error: '無効なトークンです' },
-        { status: 400 }
-      );
+    if (!token) {
+      return NextResponse.json({ error: '無効なトークンです' }, { status: 400 });
     }
 
     // Find the participant with this token
@@ -22,10 +18,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error || !participant) {
-      return NextResponse.json(
-        { error: '参加者が見つかりませんでした' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '参加者が見つかりませんでした' }, { status: 404 });
     }
 
     // Get the party information
@@ -36,10 +29,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (partyError || !party) {
-      return NextResponse.json(
-        { error: 'パーティが見つかりませんでした' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'パーティが見つかりませんでした' }, { status: 404 });
     }
 
     // Check if the party is active
@@ -52,10 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Check if voting is open
     if (party.current_mode === 'closed') {
-      return NextResponse.json(
-        { error: '現在投票は受け付けていません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '現在投票は受け付けていません' }, { status: 403 });
     }
 
     return NextResponse.json({
@@ -72,9 +59,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Token validation error:', error);
-    return NextResponse.json(
-      { error: 'サーバーエラーが発生しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
 }

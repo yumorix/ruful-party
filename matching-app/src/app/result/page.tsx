@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 interface Participant {
@@ -38,8 +38,8 @@ interface SeatingPlan {
 }
 
 export default function ResultPage() {
-  const params = useParams();
-  const token = params.token as string;
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

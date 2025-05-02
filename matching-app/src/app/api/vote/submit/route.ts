@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/db/supabase';
-import { isValidTokenFormat } from '@/lib/utils/token';
 import { ulid } from 'ulid';
 
 export async function POST(request: NextRequest) {
@@ -8,18 +7,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { token, votes } = body;
 
-    if (!token || !isValidTokenFormat(token)) {
-      return NextResponse.json(
-        { error: '無効なトークンです' },
-        { status: 400 }
-      );
+    if (!token) {
+      return NextResponse.json({ error: '無効なトークンです' }, { status: 400 });
     }
 
     if (!votes || !Array.isArray(votes) || votes.length === 0) {
-      return NextResponse.json(
-        { error: '投票データが無効です' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '投票データが無効です' }, { status: 400 });
     }
 
     // Find the participant with this token
@@ -30,10 +23,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error || !participant) {
-      return NextResponse.json(
-        { error: '参加者が見つかりませんでした' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '参加者が見つかりませんでした' }, { status: 404 });
     }
 
     // Get the party information
@@ -44,10 +34,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (partyError || !party) {
-      return NextResponse.json(
-        { error: 'パーティが見つかりませんでした' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'パーティが見つかりませんでした' }, { status: 404 });
     }
 
     // Check if the party is active
@@ -60,10 +47,7 @@ export async function POST(request: NextRequest) {
 
     // Check if voting is open
     if (party.current_mode === 'closed') {
-      return NextResponse.json(
-        { error: '現在投票は受け付けていません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '現在投票は受け付けていません' }, { status: 403 });
     }
 
     // Check if the participant has already voted in this round
@@ -75,10 +59,7 @@ export async function POST(request: NextRequest) {
       .eq('vote_type', party.current_mode);
 
     if (existingVotes && existingVotes.length > 0) {
-      return NextResponse.json(
-        { error: 'すでに投票済みです' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'すでに投票済みです' }, { status: 400 });
     }
 
     // Prepare vote data
@@ -92,16 +73,11 @@ export async function POST(request: NextRequest) {
     }));
 
     // Insert votes
-    const { error: insertError } = await supabase
-      .from('votes')
-      .insert(voteData);
+    const { error: insertError } = await supabase.from('votes').insert(voteData);
 
     if (insertError) {
       console.error('Vote insertion error:', insertError);
-      return NextResponse.json(
-        { error: '投票の保存に失敗しました' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: '投票の保存に失敗しました' }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -110,9 +86,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Vote submission error:', error);
-    return NextResponse.json(
-      { error: 'サーバーエラーが発生しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
 }

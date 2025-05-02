@@ -12,9 +12,9 @@ export function generateAccessToken(partyId: string, name: string): string {
   const timestamp = Date.now().toString();
   const randomString = ulid();
   const hash = createHash('sha256');
-  
+
   hash.update(`${partyId}:${name}:${timestamp}:${randomString}`);
-  
+
   return hash.digest('hex').substring(0, 32);
 }
 
@@ -36,9 +36,9 @@ export function isValidTokenFormat(token: string): boolean {
  */
 export function generateQRCodeUrl(token: string, baseUrl: string): string {
   try {
-    // Create a URL for the vote page with the token
-    const voteUrl = `${baseUrl}/vote/${token}`;
-    
+    // Create a URL for the vote page with the token as a query parameter
+    const voteUrl = `${baseUrl}/vote?token=${token}`;
+
     // For synchronous usage, return a placeholder
     // The actual QR code will be generated asynchronously in the component
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(voteUrl)}`;
@@ -56,9 +56,9 @@ export function generateQRCodeUrl(token: string, baseUrl: string): string {
  */
 export async function generateQRCodeDataUrl(token: string, baseUrl: string): Promise<string> {
   try {
-    // Create a URL for the vote page with the token
-    const voteUrl = `${baseUrl}/vote/${token}`;
-    
+    // Create a URL for the vote page with the token as a query parameter
+    const voteUrl = `${baseUrl}/vote?token=${token}`;
+
     // Generate a QR code as a data URL
     return await QRCode.toDataURL(voteUrl, {
       errorCorrectionLevel: 'H',
@@ -66,8 +66,8 @@ export async function generateQRCodeDataUrl(token: string, baseUrl: string): Pro
       width: 200,
       color: {
         dark: '#000000',
-        light: '#ffffff'
-      }
+        light: '#ffffff',
+      },
     });
   } catch (error) {
     console.error('Error generating QR code:', error);
