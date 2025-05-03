@@ -97,6 +97,28 @@ export async function checkExistingVotes(
   return (data && data.length > 0) || false;
 }
 
+export async function hasUserVoted(token: string): Promise<boolean> {
+  try {
+    // Get participant info from token
+    const participant = await getParticipantByToken(token);
+    if (!participant) {
+      return false;
+    }
+
+    // Get party info
+    const party = await getPartyById(participant.party_id);
+    if (!party || party.status !== 'active' || party.current_mode === 'closed') {
+      return false;
+    }
+
+    // Check if participant has already voted in this round
+    return await checkExistingVotes(participant.id, party.id, party.current_mode);
+  } catch (error) {
+    console.error('Error checking if user has voted:', error);
+    return false;
+  }
+}
+
 export async function submitVotes(
   token: string,
   votes: { voted_id: string; rank: number }[]

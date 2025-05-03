@@ -1,25 +1,13 @@
-import { getParticipantByToken, getPartyById, getParticipantsByParty } from '@/lib/db/queries';
+import {
+  getParticipantByToken,
+  getPartyById,
+  getParticipantsByParty,
+  hasUserVoted,
+} from '@/lib/db/queries';
+import { redirect } from 'next/navigation';
 import { isValidTokenFormat } from '@/lib/utils/token';
 import VoteClient from '@/components/VoteClient';
-
-interface Participant {
-  id: string;
-  name: string;
-  gender: string;
-}
-
-interface Party {
-  id: string;
-  name: string;
-  current_mode: 'interim' | 'final' | 'closed';
-}
-
-interface VoteOption {
-  id: string;
-  name: string;
-  gender: string;
-  participant_number: number;
-}
+import { isRedirectError, RedirectError } from '@/lib/errors/RedirectError';
 
 export default async function VotePage({
   searchParams,
@@ -46,6 +34,12 @@ export default async function VotePage({
   }
 
   try {
+    // Check if user has already voted
+    const alreadyVoted = await hasUserVoted(token);
+    if (alreadyVoted) {
+      throw new RedirectError(`/result?token=${token}`);
+    }
+
     // Validate token and get participant info
     const participant = await getParticipantByToken(token);
     if (!participant) {
@@ -125,6 +119,9 @@ export default async function VotePage({
       <VoteClient token={token} participant={participant} party={party} voteOptions={voteOptions} />
     );
   } catch (error) {
+    if (isRedirectError(error)) {
+      redirect(error.path);
+    }
     console.error('Vote page error:', error);
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
