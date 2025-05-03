@@ -2,7 +2,9 @@
 
 # dependencies
 admin/node_modules
+matching-app/node_modules
 admin/.pnp
+matching-app/.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -12,14 +14,17 @@ admin/.pnp
 
 # testing
 admin/coverage
+matching-app/coverage
 
 # next.js
 admin/.next/
 admin/out/
+matching-app/.next/
+matching-app/out/
 
 # production
 admin/build
-
+matching-app/build
 # misc
 .DS_Store
 *.pem
