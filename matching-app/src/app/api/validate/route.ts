@@ -1,34 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/db/supabase';
+import { getParticipantByToken, getPartyById } from '@/lib/db/queries';
+import { tokenValidationSchema } from '@/lib/utils/validation';
+import { isValidTokenFormat } from '@/lib/utils/token';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token } = body;
 
-    if (!token) {
+    // Validate request body
+    const result = tokenValidationSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: '無効なリクエストです' }, { status: 400 });
+    }
+
+    const { token } = result.data;
+
+    if (!isValidTokenFormat(token)) {
       return NextResponse.json({ error: '無効なトークンです' }, { status: 400 });
     }
 
     // Find the participant with this token
-    const { data: participant, error } = await supabase
-      .from('participants')
-      .select('id, name, gender, party_id')
-      .eq('access_token', token)
-      .single();
-
-    if (error || !participant) {
+    const participant = await getParticipantByToken(token);
+    if (!participant) {
       return NextResponse.json({ error: '参加者が見つかりませんでした' }, { status: 404 });
     }
 
     // Get the party information
-    const { data: party, error: partyError } = await supabase
-      .from('parties')
-      .select('id, name, status, current_mode')
-      .eq('id', participant.party_id)
-      .single();
-
-    if (partyError || !party) {
+    const party = await getPartyById(participant.party_id);
+    if (!party) {
       return NextResponse.json({ error: 'パーティが見つかりませんでした' }, { status: 404 });
     }
 

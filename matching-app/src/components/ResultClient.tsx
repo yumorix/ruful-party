@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import Image from 'next/image';
 
 interface Participant {
@@ -37,68 +36,22 @@ interface SeatingPlan {
   image_url: string | null;
 }
 
-export default function ResultPage() {
-  const params = useParams();
-  const token = params.token as string;
+interface ResultClientProps {
+  participant: Participant;
+  party: Party;
+  matches: Match[];
+  seatingPlan: SeatingPlan | null;
+  initialError?: string | null;
+}
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [participant, setParticipant] = useState<Participant | null>(null);
-  const [party, setParty] = useState<Party | null>(null);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [seatingPlan, setSeatingPlan] = useState<SeatingPlan | null>(null);
-
-  useEffect(() => {
-    if (!token) {
-      setError('無効なアクセストークンです');
-      setLoading(false);
-      return;
-    }
-
-    async function fetchResults() {
-      try {
-        const response = await fetch('/api/result', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.error || '結果の取得に失敗しました');
-          setLoading(false);
-          return;
-        }
-
-        setParticipant(data.participant);
-        setParty(data.party);
-        setMatches(data.matches || []);
-        setSeatingPlan(data.seatingPlan);
-        setLoading(false);
-      } catch (err) {
-        console.error('Result fetch error:', err);
-        setError('サーバーエラーが発生しました');
-        setLoading(false);
-      }
-    }
-
-    fetchResults();
-  }, [token]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <div className="card w-full max-w-md">
-          <div className="card-content text-center">
-            <p>読み込み中...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+export default function ResultClient({
+  participant,
+  party,
+  matches,
+  seatingPlan,
+  initialError,
+}: ResultClientProps) {
+  const [error, setError] = useState<string | null>(initialError || null);
 
   if (error) {
     return (
@@ -117,32 +70,31 @@ export default function ResultPage() {
   }
 
   // Filter matches by type based on party mode
-  const currentMatches = matches.filter(match => match.match_type === party?.current_mode);
-
+  const currentMatches = matches.filter(match => match.match_type === party.current_mode);
   const finalMatches = matches.filter(match => match.match_type === 'final');
 
   return (
     <div className="flex flex-col items-center p-4">
       <div className="card w-full max-w-md mb-4">
         <div className="card-content">
-          <h2 className="text-xl font-bold mb-2">{party?.name}</h2>
+          <h2 className="text-xl font-bold mb-2">{party.name}</h2>
           <p className="mb-4">
-            {party?.current_mode === 'interim'
+            {party.current_mode === 'interim'
               ? '中間結果'
-              : party?.current_mode === 'final'
+              : party.current_mode === 'final'
                 ? '最終結果'
                 : '結果'}
           </p>
           <div className="flex items-center mb-4">
             <div className="bg-primary-light text-white px-3 py-1 rounded-full text-sm">
-              {participant?.name}
+              {participant.name}
             </div>
           </div>
         </div>
       </div>
 
       {/* Seating Plan (for interim results) */}
-      {party?.current_mode === 'interim' && seatingPlan && (
+      {party.current_mode === 'interim' && seatingPlan && (
         <div className="card w-full max-w-md mb-4">
           <div className="card-content">
             <h3 className="font-bold mb-4">席替え結果</h3>
@@ -188,7 +140,7 @@ export default function ResultPage() {
       )}
 
       {/* Final Matches (for final results) */}
-      {party?.current_mode === 'final' && (
+      {party.current_mode === 'final' && (
         <div className="card w-full max-w-md mb-4">
           <div className="card-content">
             <h3 className="font-bold mb-4">マッチング結果</h3>
@@ -232,7 +184,7 @@ export default function ResultPage() {
       )}
 
       {/* Waiting message if party is active but no results yet */}
-      {party?.status === 'active' && matches.length === 0 && (
+      {party.status === 'active' && matches.length === 0 && (
         <div className="card w-full max-w-md mb-4">
           <div className="card-content text-center">
             <p className="mb-4">結果はまだ発表されていません。</p>
