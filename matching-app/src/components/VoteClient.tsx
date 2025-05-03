@@ -180,6 +180,7 @@ export default function VoteClient({
         <div className="card-content">
           <h2 className="text-xl font-bold mb-2">{party.name}</h2>
           <p className="mb-4">{party.current_mode === 'interim' ? '中間投票' : '最終投票'}</p>
+          <p className="mb-4">{`あなたは${participant.name}さんです`}</p>
           <p className="text-sm mb-6">
             気になる相手を最大3人まで選択してください。
             <br />

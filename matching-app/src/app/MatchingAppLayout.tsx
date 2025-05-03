@@ -10,7 +10,7 @@ export default function MatchingAppLayout({ children }: { children: React.ReactN
       {/* Header */}
       <header className="bg-primary-main shadow-md z-10">
         <div className="flex items-center justify-center px-4 h-16">
-          <h1 className="text-xl text-white">RufulParty</h1>
+          <h1 className="text-xl text-black">RufulParty</h1>
         </div>
       </header>
 

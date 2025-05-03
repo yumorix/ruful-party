@@ -24,9 +24,6 @@ export default async function VotePage({
           <div className="card-content">
             <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
             <p className="mb-4">無効なアクセストークンです</p>
-            <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-              再試行
-            </button>
           </div>
         </div>
       </div>
@@ -49,9 +46,6 @@ export default async function VotePage({
             <div className="card-content">
               <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
               <p className="mb-4">参加者が見つかりませんでした</p>
-              <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-                再試行
-              </button>
             </div>
           </div>
         </div>
@@ -67,9 +61,6 @@ export default async function VotePage({
             <div className="card-content">
               <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
               <p className="mb-4">パーティが見つかりませんでした</p>
-              <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-                再試行
-              </button>
             </div>
           </div>
         </div>
@@ -84,9 +75,6 @@ export default async function VotePage({
             <div className="card-content">
               <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
               <p className="mb-4">パーティはまだ開始されていないか、既に終了しています</p>
-              <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-                再試行
-              </button>
             </div>
           </div>
         </div>
@@ -101,9 +89,6 @@ export default async function VotePage({
             <div className="card-content">
               <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
               <p className="mb-4">現在投票は受け付けていません</p>
-              <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-                再試行
-              </button>
             </div>
           </div>
         </div>
@@ -129,9 +114,6 @@ export default async function VotePage({
           <div className="card-content">
             <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
             <p className="mb-4">サーバーエラーが発生しました</p>
-            <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
-              再試行
-            </button>
           </div>
         </div>
       </div>
