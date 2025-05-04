@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+// Table definition
+export const tableSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  seatCount: z.number().min(2, '席数は2以上必要です').max(12, '席数は12以下にしてください'),
+});
+
+export type TableData = z.infer<typeof tableSchema>;
+
 // Vote submission validation schema
 export const voteSubmissionSchema = z.object({
   token: z.string().min(1, { message: 'トークンは必須です' }),

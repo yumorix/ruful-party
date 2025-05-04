@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { partySettingsSchema, PartySettingsFormData } from '../../lib/utils/validation';
+import { partySettingsSchema, PartySettingsFormData, TableData } from '../../lib/utils/validation';
 import { PartySetting } from '../../lib/db/supabase';
+import TableConfigEditor from './TableConfigEditor';
+import { ulid } from 'ulid';
 
 interface SettingFormProps {
   partyId: string;
@@ -21,9 +23,12 @@ export default function SettingForm({
 }: SettingFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const [tables, setTables] = useState<TableData[]>([]);
+
   const defaultSeatingLayout = {
     tableCount: 5,
     seatsPerTable: 6,
+    tables: [],
   };
 
   const defaultMatchingRule = {
@@ -41,6 +46,8 @@ export default function SettingForm({
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<PartySettingsFormData>({
     resolver: zodResolver(partySettingsSchema),
     defaultValues: {
@@ -51,9 +58,69 @@ export default function SettingForm({
     },
   });
 
+  // Initialize tables from initialData or create default tables
+  useEffect(() => {
+    if (initialData?.seating_layout?.tables) {
+      setTables(initialData.seating_layout.tables as TableData[]);
+    } else {
+      // Create default tables based on tableCount
+      const tableCount = initialData?.seating_layout?.tableCount || 5;
+      const seatsPerTable = initialData?.seating_layout?.seatsPerTable || 6;
+
+      const defaultTables: TableData[] = Array.from({ length: tableCount }).map((_, index) => ({
+        id: ulid(),
+        name: `テーブル ${index + 1}`,
+        seatCount: seatsPerTable,
+      }));
+
+      setTables(defaultTables);
+      setValue('seating_layout.tables', defaultTables);
+    }
+  }, [initialData, setValue]);
+
+  // Watch for changes in tableCount and seatsPerTable
+  const tableCount = watch('seating_layout.tableCount');
+  const seatsPerTable = watch('seating_layout.seatsPerTable');
+
+  // Update tables when tableCount changes
+  useEffect(() => {
+    if (tables.length === tableCount) return;
+
+    let newTables = [...tables];
+
+    // Add tables if needed
+    if (tables.length < tableCount) {
+      const tablesNeeded = tableCount - tables.length;
+      const additionalTables = Array.from({ length: tablesNeeded }).map((_, index) => ({
+        id: ulid(),
+        name: `テーブル ${tables.length + index + 1}`,
+        seatCount: seatsPerTable,
+      }));
+      newTables = [...newTables, ...additionalTables];
+    }
+    // Remove tables if needed
+    else if (tables.length > tableCount) {
+      newTables = newTables.slice(0, tableCount);
+    }
+
+    setTables(newTables);
+    setValue('seating_layout.tables', newTables);
+  }, [tableCount, seatsPerTable, tables, setValue]);
+
+  // Handle table changes from the TableConfigEditor
+  const handleTablesChange = (updatedTables: TableData[]) => {
+    setTables(updatedTables);
+    setValue('seating_layout.tables', updatedTables);
+    setValue('seating_layout.tableCount', updatedTables.length);
+  };
+
   const onFormSubmit = async (data: PartySettingsFormData) => {
     try {
       setSubmitError(null);
+
+      // Ensure tables are included in the submission
+      data.seating_layout.tables = tables;
+
       await onSubmit(data);
     } catch (error) {
       console.error('Form submission error:', error);
@@ -113,7 +180,9 @@ export default function SettingForm({
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">テーブルあたりの席数</label>
+                <label className="block text-sm font-medium mb-1">
+                  デフォルトのテーブルあたりの席数
+                </label>
                 <Controller
                   name="seating_layout.seatsPerTable"
                   control={control}
@@ -130,7 +199,7 @@ export default function SettingForm({
                           type="range"
                           min={2}
                           max={12}
-                          step={2}
+                          step={1}
                           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                           value={field.value}
                           onChange={e => field.onChange(parseInt(e.target.value))}
@@ -140,7 +209,7 @@ export default function SettingForm({
                         type="number"
                         min={2}
                         max={12}
-                        step={2}
+                        step={1}
                         className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-main"
                         value={field.value}
                         onChange={e => field.onChange(parseInt(e.target.value) || 2)}
@@ -153,6 +222,10 @@ export default function SettingForm({
                     {errors.seating_layout.seatsPerTable.message}
                   </p>
                 )}
+              </div>
+
+              <div className="mt-8 pt-4 border-t">
+                <TableConfigEditor tables={tables} onChange={handleTablesChange} />
               </div>
             </div>
           </div>
