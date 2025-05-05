@@ -134,7 +134,7 @@
 - id: ULID（プライマリキー）
 - party_id: パーティID（外部キー）
 - plan_type: 'interim'/'final'
-- layout_data: JSON（全体の座席配置データ）
+- layout_data: JSON（投票結果をもとにAIが出力した座席レイアウト）
 - image_url: 席表画像のURL
 - created_at: 作成日時
 

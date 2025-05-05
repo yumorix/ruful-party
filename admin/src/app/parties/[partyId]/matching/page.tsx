@@ -101,15 +101,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
 
     await createMatches(matchesToCreate);
 
-    // Generate seating plan
-    const seatingPlanResult = await generateSeatingPlan(participants, finalVotes, settings);
-
-    await createOrUpdateSeatingPlan({
-      party_id: partyId,
-      plan_type: 'final',
-      layout_data: JSON.parse(JSON.stringify(seatingPlanResult.layoutData)),
-      image_url: '',
-    });
+    // 最終投票では席替えは不要なので、席配置の生成は行わない
 
     redirect(`/parties/${partyId}/matching`);
   }
