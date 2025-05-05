@@ -4,7 +4,6 @@ export const generateInterimSeatingPlanPrompt = (
   party: Party,
   partySetting: PartySetting,
   votes: Vote[],
-  seatingPlan: SeatingPlan,
   participants: Participant[] // 参加者情報も必要
 ) => {
   // 参加者ごとの投票結果を集計
@@ -45,13 +44,30 @@ ${Object.entries(votesByVoter)
   .join('\n')}
 
 **座席レイアウト:**
-  - ${JSON.stringify(seatingPlan.layout_data)}
+  - ${JSON.stringify(partySetting.seating_layout)}
 
 **考慮事項:**
 - 中間投票で相互に投票し合った男女の参加者は、可能な限り同じテーブルに配置してください。
 - 各テーブルの男女比は可能な限り均等に配置してください。
 
 **出力形式:**
-- 次のセッションの座席配置案 (テーブル番号: [参加者IDのリスト])
+\`\`\`json
+{
+  "seatingArrangement": [
+    {
+      "tableNumber": (integer),
+      "participants": [
+        {
+          "participantId": "(参加者ID)",
+          "name": "(参加者名)",
+          "gender": "(性別)"
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+\`\`\`
 `;
 };
