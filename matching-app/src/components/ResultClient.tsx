@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 
 interface Participant {
@@ -26,13 +25,13 @@ interface Match {
   id: string;
   match_type: 'interim' | 'final';
   table_number: number | null;
-  seat_positions: any | null;
+  seat_positions: any | null; //eslint-disable-line @typescript-eslint/no-explicit-any
   partner: Partner;
 }
 
 interface SeatingPlan {
   id: string;
-  layout_data: any;
+  layout_data: any; //eslint-disable-line @typescript-eslint/no-explicit-any
   image_url: string | null;
 }
 
@@ -51,15 +50,13 @@ export default function ResultClient({
   seatingPlan,
   initialError,
 }: ResultClientProps) {
-  const [error, setError] = useState<string | null>(initialError || null);
-
-  if (error) {
+  if (initialError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <div className="card w-full max-w-md">
           <div className="card-content">
             <h2 className="text-xl font-bold text-error-main mb-4">エラー</h2>
-            <p className="mb-4">{error}</p>
+            <p className="mb-4">{initialError}</p>
             <button onClick={() => window.location.reload()} className="btn btn-primary w-full">
               再試行
             </button>

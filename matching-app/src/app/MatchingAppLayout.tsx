@@ -1,10 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function MatchingAppLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -16,7 +14,17 @@ export default function MatchingAppLayout({ children }: { children: React.ReactN
 
       {/* Page content */}
       <main className="flex-1 overflow-auto p-4 bg-background-default">
-        <div className="max-w-md mx-auto mt-2">{children}</div>
+        <div className="max-w-md mx-auto mt-2">
+          <Suspense
+            fallback={
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-main"></div>
+              </div>
+            }
+          >
+            {children}
+          </Suspense>
+        </div>
       </main>
 
       {/* Footer */}

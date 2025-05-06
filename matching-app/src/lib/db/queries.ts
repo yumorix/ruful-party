@@ -1,7 +1,6 @@
 import { supabase } from './supabase';
-import { Party, Participant, Vote, VoteInsert, Match as BaseMatch, SeatingPlan } from './supabase';
+import { Party, Participant, VoteInsert, Match as BaseMatch, SeatingPlan } from './supabase';
 import { ulid } from 'ulid';
-import { VoteSubmissionData } from '../utils/validation';
 
 // Extended Match type to include joined participants data
 interface Match extends BaseMatch {
