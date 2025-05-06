@@ -42,7 +42,7 @@ export default function SeatingPlanViewer({ seatingPlan, participants }: Seating
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {seatingPlan.seatingArrangement.map(table => (
           <div key={table.tableNumber} className="border rounded-lg overflow-hidden shadow-sm">
-            <div className="bg-primary-main text-white px-4 py-2 font-medium">
+            <div className="bg-primary-main text-black px-4 py-2 font-medium">
               テーブル {table.tableNumber}
             </div>
             <div className="p-4">
@@ -61,16 +61,18 @@ export default function SeatingPlanViewer({ seatingPlan, participants }: Seating
                             participant.gender === 'male' ? 'bg-primary-main' : 'bg-secondary-main'
                           }`}
                         />
-                        <span className="font-medium">
-                          {participant.name}
-                          {participantData && ` (#${participantData.participant_number})`}
+                        <span
+                          className={`font-medium ${participant.gender === 'male' ? 'text-blue-400' : 'text-pink-400'}`}
+                        >
+                          {participantData && participantData.participant_number}番
+                          {participantData && ` (${participant.name})`}
                         </span>
                       </div>
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           participant.gender === 'male'
-                            ? 'bg-primary-light text-primary-dark'
-                            : 'bg-secondary-light text-secondary-dark'
+                            ? 'bg-primary-light text-primary-dark text-blue-400'
+                            : 'bg-secondary-light text-secondary-dark text-pink-400'
                         }`}
                       >
                         {participant.gender === 'male' ? '男性' : '女性'}
