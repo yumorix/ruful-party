@@ -7,45 +7,14 @@ import {
 import { isValidTokenFormat } from '@/lib/utils/token';
 import ResultClient from '@/components/ResultClient';
 
-interface Participant {
-  id: string;
-  name: string;
-  gender: string;
-}
+type SearchParams = {
+  params: Promise<{
+    token: string;
+  }>;
+};
 
-interface Party {
-  id: string;
-  name: string;
-  status: 'preparing' | 'active' | 'closed';
-  current_mode: 'interim' | 'final' | 'closed';
-}
-
-interface Partner {
-  id: string;
-  name: string;
-  gender: string;
-}
-
-interface Match {
-  id: string;
-  match_type: 'interim' | 'final';
-  table_number: number | null;
-  seat_positions: any | null;
-  partner: Partner;
-}
-
-interface SeatingPlan {
-  id: string;
-  layout_data: any;
-  image_url: string | null;
-}
-
-export default async function ResultPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const token = searchParams.token as string;
+export default async function ResultPage({ params }: SearchParams) {
+  const token = (await params).token as string;
 
   // Loading state is handled by Suspense in the parent layout
   if (!token || !isValidTokenFormat(token)) {

@@ -9,12 +9,13 @@ import { isValidTokenFormat } from '@/lib/utils/token';
 import VoteClient from '@/components/VoteClient';
 import { isRedirectError, RedirectError } from '@/lib/errors/RedirectError';
 
-export default async function VotePage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const token = searchParams.token as string;
+type VotePageProps = {
+  params: Promise<{
+    token: string;
+  }>;
+};
+export default async function VotePage({ params }: VotePageProps) {
+  const token = (await params).token as string;
 
   // Loading state is handled by Suspense in the parent layout
   if (!token || !isValidTokenFormat(token)) {
