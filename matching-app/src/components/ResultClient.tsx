@@ -1,12 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import SeatingPlanViewer from './SeatingPlanViewer';
 
-interface Participant {
-  id: string;
-  name: string;
-  gender: string;
-}
+import { Participant } from '@/lib/db/supabase';
 
 interface Party {
   id: string;
@@ -40,6 +37,7 @@ interface ResultClientProps {
   party: Party;
   matches: Match[];
   seatingPlan: SeatingPlan | null;
+  allParticipants?: Participant[];
   initialError?: string | null;
 }
 
@@ -48,6 +46,7 @@ export default function ResultClient({
   party,
   matches,
   seatingPlan,
+  allParticipants,
   initialError,
 }: ResultClientProps) {
   if (initialError) {
@@ -83,7 +82,7 @@ export default function ResultClient({
                 : '結果'}
           </p>
           <div className="flex items-center mb-4">
-            <div className="bg-primary-light text-white px-3 py-1 rounded-full text-sm">
+            <div className="bg-primary-light text-black px-3 py-1 rounded-full text-sm">
               {participant.name}
             </div>
           </div>
@@ -102,6 +101,39 @@ export default function ResultClient({
                   alt="席配置図"
                   fill
                   style={{ objectFit: 'contain' }}
+                />
+              </div>
+            ) : seatingPlan.layout_data &&
+              typeof seatingPlan.layout_data === 'object' &&
+              'seatingArrangement' in seatingPlan.layout_data &&
+              Array.isArray(
+                (seatingPlan.layout_data as { seatingArrangement: unknown }).seatingArrangement
+              ) ? (
+              <div className="mb-4">
+                <SeatingPlanViewer
+                  seatingPlan={
+                    seatingPlan.layout_data as {
+                      seatingArrangement: Array<{
+                        tableNumber: number;
+                        participants: Array<{
+                          participantId: string;
+                          name: string;
+                          gender: string;
+                        }>;
+                      }>;
+                    }
+                  }
+                  participants={
+                    allParticipants || [
+                      {
+                        id: participant.id,
+                        name: participant.name,
+                        gender: participant.gender,
+                        participant_number: participant.participant_number,
+                      },
+                    ]
+                  }
+                  currentParticipantId={participant.id}
                 />
               </div>
             ) : (
@@ -184,9 +216,9 @@ export default function ResultClient({
       {party.status === 'active' && matches.length === 0 && (
         <div className="card w-full max-w-md mb-4">
           <div className="card-content text-center">
-            <p className="mb-4">結果はまだ発表されていません。</p>
+            <p className="mb-4">最終マッチング結果はまだ発表されていません。</p>
             <p className="text-sm text-gray-500">
-              しばらくお待ちください。結果が発表されると、このページに表示されます。
+              しばらくお待ちください。最終マッチング結果が発表されると、このページに表示されます。
             </p>
           </div>
         </div>

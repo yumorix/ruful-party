@@ -3,7 +3,9 @@ import {
   getPartyById,
   getMatchesByParticipant,
   getSeatingPlan,
+  getAllParticipantsByParty,
 } from '@/lib/db/queries';
+import { Participant } from '@/lib/db/supabase';
 import ResultClient from '@/components/ResultClient';
 
 interface ResultPageProps {
@@ -79,8 +81,13 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
 
     // Get seating plan if available (only for interim matches)
     let seatingPlan = null;
+    let allParticipants: Participant[] = [];
     if (party.current_mode === 'interim') {
       seatingPlan = await getSeatingPlan(party.id, party.current_mode);
+      // If seating plan exists, fetch all participants for the party
+      if (seatingPlan && seatingPlan.layout_data) {
+        allParticipants = await getAllParticipantsByParty(party.id);
+      }
     }
 
     // Process matches to get the correct partner information
@@ -108,6 +115,7 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
         party={party}
         matches={processedMatches}
         seatingPlan={seatingPlan}
+        allParticipants={allParticipants}
       />
     );
   } catch (error) {

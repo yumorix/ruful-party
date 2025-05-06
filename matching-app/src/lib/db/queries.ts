@@ -38,21 +38,31 @@ export async function getParticipantByToken(token: string): Promise<Participant 
 
 export async function getParticipantsByParty(
   partyId: string,
-  gender: 'male' | 'female'
+  gender?: 'male' | 'female'
 ): Promise<Participant[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from('participants')
     .select('id, name, gender, participant_number')
     .eq('party_id', partyId)
-    .eq('gender', gender)
     .order('participant_number', { ascending: true });
 
+  // Add gender filter if provided
+  if (gender) {
+    query = query.eq('gender', gender);
+  }
+
+  const { data, error } = await query;
+
   if (error) {
-    console.error('Error fetching participants by party and gender:', error);
+    console.error('Error fetching participants by party:', error);
     throw error;
   }
 
   return (data || []) as Participant[];
+}
+
+export async function getAllParticipantsByParty(partyId: string): Promise<Participant[]> {
+  return getParticipantsByParty(partyId);
 }
 
 // Party queries
