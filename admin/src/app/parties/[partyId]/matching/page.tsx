@@ -268,9 +268,24 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
 
                 {interimSeatingPlan.layout_data &&
                 typeof interimSeatingPlan.layout_data === 'object' &&
-                'seatingArrangement' in interimSeatingPlan.layout_data ? (
+                'seatingArrangement' in interimSeatingPlan.layout_data &&
+                Array.isArray(
+                  (interimSeatingPlan.layout_data as { seatingArrangement: unknown })
+                    .seatingArrangement
+                ) ? (
                   <SeatingPlanViewer
-                    seatingPlan={interimSeatingPlan.layout_data as any}
+                    seatingPlan={
+                      interimSeatingPlan.layout_data as {
+                        seatingArrangement: Array<{
+                          tableNumber: number;
+                          participants: Array<{
+                            participantId: string;
+                            name: string;
+                            gender: string;
+                          }>;
+                        }>;
+                      }
+                    }
                     participants={participants}
                   />
                 ) : (
