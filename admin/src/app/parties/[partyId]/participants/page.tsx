@@ -93,7 +93,9 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
 
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">男性参加者 ({maleParticipants.length})</h3>
+            <h3 className="text-lg font-semibold mb-2 text-blue-400">
+              男性参加者 ({maleParticipants.length})
+            </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -175,7 +177,9 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-2">女性参加者 ({femaleParticipants.length})</h3>
+            <h3 className="text-lg font-semibold mb-2 text-pink-400">
+              女性参加者 ({femaleParticipants.length})
+            </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">

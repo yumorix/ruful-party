@@ -98,7 +98,11 @@ export default async function ParticipantDetailPage(props: ParticipantDetailPage
 
               <div>
                 <p className="text-sm text-gray-500">性別</p>
-                <p className="font-medium">{participant.gender === 'male' ? '男性' : '女性'}</p>
+                <p
+                  className={`font-medium ${participant.gender === 'male' ? 'text-blue-400' : 'text-pink-400'}`}
+                >
+                  {participant.gender === 'male' ? '男性' : '女性'}
+                </p>
               </div>
             </div>
           </div>
