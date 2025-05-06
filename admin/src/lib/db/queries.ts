@@ -15,7 +15,7 @@ import {
   SeatingPlanInsert,
 } from './supabase';
 import { ulid } from 'ulid';
-import { PartyFormData, ParticipantFormData, VoteFormData } from '../utils/validation';
+import { PartyFormData, ParticipantFormData, VoteFormData } from '@/lib/utils/validation';
 
 // Party queries
 export async function getParties(): Promise<Party[]> {

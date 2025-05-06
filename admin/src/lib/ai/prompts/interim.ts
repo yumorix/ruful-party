@@ -1,4 +1,4 @@
-import { Party, PartySetting, Vote, Participant } from '../../db/supabase';
+import { Party, PartySetting, Vote, Participant } from '@/lib/db/supabase';
 
 export const generateInterimSeatingPlanPrompt = (
   party: Party,

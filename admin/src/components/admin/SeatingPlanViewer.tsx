@@ -1,6 +1,6 @@
 'use client';
 
-import { Participant } from '../../lib/db/supabase';
+import { Participant } from '@/lib/db/supabase';
 
 interface SeatingArrangementParticipant {
   participantId: string;
