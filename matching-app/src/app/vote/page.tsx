@@ -5,7 +5,6 @@ import {
   hasUserVoted,
 } from '@/lib/db/queries';
 import { redirect } from 'next/navigation';
-import { isValidTokenFormat } from '@/lib/utils/token';
 import VoteClient from '@/components/VoteClient';
 import { isRedirectError, RedirectError } from '@/lib/errors/RedirectError';
 
@@ -18,7 +17,7 @@ export default async function VotePage({ params }: VotePageProps) {
   const token = (await params).token as string;
 
   // Loading state is handled by Suspense in the parent layout
-  if (!token || !isValidTokenFormat(token)) {
+  if (!token) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <div className="card w-full max-w-md">
