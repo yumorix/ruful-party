@@ -11,12 +11,11 @@ import {
   PartySetting,
   PartySettingInsert,
   Match,
-  MatchInsert,
   SeatingPlan,
   SeatingPlanInsert,
 } from './supabase';
 import { ulid } from 'ulid';
-import { PartyFormData, ParticipantFormData, VoteFormData } from '../utils/validation';
+import { PartyFormData, ParticipantFormData, VoteFormData } from '@/lib/utils/validation';
 
 // Party queries
 export async function getParties(): Promise<Party[]> {
@@ -336,42 +335,6 @@ export async function getMatches(
 
   if (error) {
     console.error('Error fetching matches:', error);
-    throw error;
-  }
-
-  return (data || []) as Match[];
-}
-
-export async function createMatches(matches: Omit<Match, 'id' | 'created_at'>[]): Promise<Match[]> {
-  if (matches.length === 0) {
-    return [];
-  }
-
-  const now = new Date().toISOString();
-
-  // Delete existing matches for this party and match type
-  const { error: deleteError } = await supabase
-    .from('matches')
-    .delete()
-    .eq('party_id', matches[0].party_id)
-    .eq('match_type', matches[0].match_type);
-
-  if (deleteError) {
-    console.error('Error deleting existing matches:', deleteError);
-    throw deleteError;
-  }
-
-  // Create new matches
-  const matchesWithIds: MatchInsert[] = matches.map(match => ({
-    id: ulid(),
-    ...match,
-    created_at: now,
-  }));
-
-  const { data, error } = await supabase.from('matches').insert(matchesWithIds).select();
-
-  if (error) {
-    console.error('Error creating matches:', error);
     throw error;
   }
 

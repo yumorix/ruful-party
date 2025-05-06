@@ -109,9 +109,9 @@ export default async function ResultPage({
     // Get matches for this participant
     const matches = await getMatchesByParticipant(participant.id, party.id);
 
-    // Get seating plan if available
+    // Get seating plan if available (only for interim matches)
     let seatingPlan = null;
-    if (party.current_mode === 'interim' || party.current_mode === 'final') {
+    if (party.current_mode === 'interim') {
       seatingPlan = await getSeatingPlan(party.id, party.current_mode);
     }
 

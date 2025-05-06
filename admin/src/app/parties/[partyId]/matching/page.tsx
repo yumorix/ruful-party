@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import SeatingPlanViewer from '@/components/admin/SeatingPlanViewer';
 import {
   getParty,
   getParticipants,
@@ -7,12 +8,10 @@ import {
   getPartySetting,
   getMatches,
   getSeatingPlan,
-  createMatches,
   createOrUpdateSeatingPlan,
   updateParty,
-} from '../../../../lib/db/queries';
-import { generateMatches } from '../../../../lib/ai/matchingEngine';
-import { generateSeatingPlan } from '../../../../lib/ai/seatingPlanner';
+} from '@/lib/db/queries';
+import { generateSeatingPlan as generateGeminiSeatingPlan } from '@/lib/ai/gemini';
 
 interface MatchingPageProps {
   params: Promise<{
@@ -36,80 +35,47 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
   const interimMatches = await getMatches(partyId, 'interim');
   const finalMatches = await getMatches(partyId, 'final');
   const interimSeatingPlan = await getSeatingPlan(partyId, 'interim');
-  // const finalSeatingPlan = await getSeatingPlan(partyId, 'final');
 
-  // const maleParticipants = participants.filter(p => p.gender === 'male');
-  // const femaleParticipants = participants.filter(p => p.gender === 'female');
-
-  async function handleGenerateInterimMatches() {
+  async function handleGenerateAISeatingPlan() {
     'use server';
 
     if (!settings) {
       throw new Error('パーティの設定が見つかりません');
     }
 
-    // Generate matches using AI
-    const matchingResult = await generateMatches(participants, interimVotes, 'interim');
-
-    // Create match records
-    const matchesToCreate = matchingResult.pairs.map(([p1Id, p2Id], index) => ({
-      party_id: partyId,
-      match_type: 'interim' as const,
-      participant1_id: p1Id,
-      participant2_id: p2Id,
-      table_number: Math.floor(index / 3) + 1, // 3 pairs per table
-      seat_positions: {
-        p1: (index % 3) * 2,
-        p2: (index % 3) * 2 + 1,
-      },
-    }));
-
-    await createMatches(matchesToCreate);
-
-    // Generate seating plan
-    const seatingPlanResult = await generateSeatingPlan(participants, interimVotes, settings);
-
-    await createOrUpdateSeatingPlan({
-      party_id: partyId,
-      plan_type: 'interim',
-      layout_data: JSON.parse(JSON.stringify(seatingPlanResult.layoutData)),
-      image_url: '',
-    });
-
-    redirect(`/parties/${partyId}/matching`);
-  }
-
-  async function handleGenerateFinalMatches() {
-    'use server';
-
-    if (!settings) {
-      throw new Error('パーティの設定が見つかりません');
+    const party = await getParty(partyId);
+    if (!party) {
+      throw new Error('パーティが見つかりません');
     }
 
-    // Generate matches using AI
-    const matchingResult = await generateMatches(participants, finalVotes, 'final');
+    // Generate seating plan using Gemini AI
+    const geminiResult = await generateGeminiSeatingPlan(
+      party,
+      settings,
+      participants,
+      interimVotes
+    );
 
-    // Create match records
-    const matchesToCreate = matchingResult.pairs.map(([p1Id, p2Id]) => ({
-      party_id: partyId,
-      match_type: 'final' as const,
-      participant1_id: p1Id,
-      participant2_id: p2Id,
-      table_number: 0, // Not relevant for final matches
-      seat_positions: {},
-    }));
+    if (!geminiResult) {
+      throw new Error('座席レイアウトの生成に失敗しました');
+    }
 
-    await createMatches(matchesToCreate);
+    try {
+      const markdownRemoved = geminiResult.replace(/^```(json)?\n/, '').replace(/\n```$/, '');
+      // Parse the JSON from the Gemini response
+      const resultJson = JSON.parse(markdownRemoved);
 
-    // Generate seating plan
-    const seatingPlanResult = await generateSeatingPlan(participants, finalVotes, settings);
-
-    await createOrUpdateSeatingPlan({
-      party_id: partyId,
-      plan_type: 'final',
-      layout_data: JSON.parse(JSON.stringify(seatingPlanResult.layoutData)),
-      image_url: '',
-    });
+      // Save the seating plan to the database
+      await createOrUpdateSeatingPlan({
+        party_id: partyId,
+        plan_type: 'interim',
+        layout_data: resultJson,
+        image_url: '',
+      });
+    } catch (error) {
+      console.error('Error parsing Gemini response:', error);
+      throw new Error('座席レイアウトの解析に失敗しました');
+    }
 
     redirect(`/parties/${partyId}/matching`);
   }
@@ -229,15 +195,17 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               <p className="text-sm mb-1">席替え: {interimSeatingPlan ? '生成済み' : '未生成'}</p>
             </div>
 
-            <form action={handleGenerateInterimMatches}>
-              <button
-                className="px-4 py-2 rounded-lg font-medium bg-primary-main text-white hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                type="submit"
-                disabled={interimVotes.length === 0 || !settings}
-              >
-                中間マッチングを生成
-              </button>
-            </form>
+            <div className="flex gap-4">
+              <form action={handleGenerateAISeatingPlan}>
+                <button
+                  className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="submit"
+                  disabled={interimVotes.length === 0 || !settings}
+                >
+                  {interimSeatingPlan ? 'AIで席替えを再生成' : 'AIで席替えを生成'}
+                </button>
+              </form>
+            </div>
 
             {interimMatches.length > 0 && (
               <div className="mt-6">
@@ -293,6 +261,45 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
                 </div>
               </div>
             )}
+
+            {interimSeatingPlan && (
+              <div className="mt-8 border-t pt-6">
+                <h4 className="text-base font-medium mb-4">席替え結果</h4>
+
+                {interimSeatingPlan.layout_data &&
+                typeof interimSeatingPlan.layout_data === 'object' &&
+                'seatingArrangement' in interimSeatingPlan.layout_data &&
+                Array.isArray(
+                  (interimSeatingPlan.layout_data as { seatingArrangement: unknown })
+                    .seatingArrangement
+                ) ? (
+                  <SeatingPlanViewer
+                    seatingPlan={
+                      interimSeatingPlan.layout_data as {
+                        seatingArrangement: Array<{
+                          tableNumber: number;
+                          participants: Array<{
+                            participantId: string;
+                            name: string;
+                            gender: string;
+                          }>;
+                        }>;
+                      }
+                    }
+                    participants={participants}
+                  />
+                ) : (
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-gray-500">
+                      席替え結果の表示に対応していないフォーマットです。
+                    </p>
+                    <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-[200px]">
+                      {JSON.stringify(interimSeatingPlan.layout_data, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <hr className="my-8 border-gray-200" />
@@ -304,16 +311,6 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               <p className="text-sm mb-1">投票数: {finalVotes.length}</p>
               <p className="text-sm mb-1">マッチング数: {finalMatches.length}</p>
             </div>
-
-            <form action={handleGenerateFinalMatches}>
-              <button
-                className="px-4 py-2 rounded-lg font-medium bg-secondary-main text-white hover:bg-secondary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                type="submit"
-                disabled={finalVotes.length === 0 || !settings}
-              >
-                最終マッチングを生成
-              </button>
-            </form>
 
             {finalMatches.length > 0 && (
               <div className="mt-6">

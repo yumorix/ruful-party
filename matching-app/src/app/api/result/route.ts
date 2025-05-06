@@ -62,9 +62,9 @@ export async function POST(request: NextRequest) {
       };
     });
 
-    // Get seating plan for interim matches
+    // Get seating plan for interim matches only
     let seatingPlan = null;
-    if (party.current_mode === 'interim' || party.current_mode === 'final') {
+    if (party.current_mode === 'interim') {
       seatingPlan = await getSeatingPlan(party.id, party.current_mode);
     }
 

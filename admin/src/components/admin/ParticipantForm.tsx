@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { participantSchema, ParticipantFormData } from '../../lib/utils/validation';
-import { Participant } from '../../lib/db/supabase';
+import { participantSchema, ParticipantFormData } from '@/lib/utils/validation';
+import { Participant } from '@/lib/db/supabase';
 import { useRouter } from 'next/navigation';
 
 interface ParticipantFormProps {

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { Database, Tables, TablesInsert, TablesUpdate } from './database.types'
+import { Database, Tables, TablesInsert, TablesUpdate } from './database.types';
+import { TableData } from '../utils/validation';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -34,6 +35,7 @@ export type PartySetting = Tables<'party_settings'> & {
   seating_layout: {
     tableCount: number;
     seatsPerTable: number;
+    tables?: TableData[];
   };
   matching_rule: {
     prioritizeMutualMatches: boolean;

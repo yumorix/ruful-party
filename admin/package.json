@@ -13,6 +13,7 @@
     "migration:local": "supabase migration up && supabase gen types typescript --local > src/lib/db/database.types.ts"
   },
   "dependencies": {
+    "@google/genai": "^0.12.0",
     "@hookform/resolvers": "^5.0.1",
     "@supabase/supabase-js": "^2.49.4",
     "@types/qrcode": "^1.5.5",
