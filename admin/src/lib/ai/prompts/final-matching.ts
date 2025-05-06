@@ -1,15 +1,14 @@
-import { Party, PartySetting, Vote, Participant } from '@/lib/db/supabase';
+import { Party, Vote, Participant } from '@/lib/db/supabase';
 
-export const generateInterimSeatingPlanPrompt = (
+export const generateFinalMatchingPrompt = (
   party: Party,
-  partySetting: PartySetting,
   votes: Vote[],
-  participants: Participant[] // 参加者情報も必要
+  participants: Participant[]
 ) => {
   // 参加者ごとの投票結果を集計
   const votesByVoter: { [voterId: string]: string[] } = {};
   votes
-    .filter(vote => vote.vote_type === 'interim') // 中間投票のみを対象とする場合
+    .filter(vote => vote.vote_type === 'final') // 最終投票のみを対象とする場合
     .filter(
       // 存在する参加者を投票対象とする
       vote =>
@@ -24,7 +23,7 @@ export const generateInterimSeatingPlanPrompt = (
     });
 
   return `
-あなたは婚活パーティーの座席割り当てAIです。以下の情報に基づき、参加者の座席を割り当ててください。
+あなたは婚活パーティーのマッチングAIです。以下の情報に基づき、参加者のマッチングを行ってください。
 
 **パーティー情報:**
 - パーティーID: ${party.id}
@@ -52,31 +51,28 @@ ${Object.entries(votesByVoter)
   )
   .join('\n')}
 
-**座席レイアウト:**
-  - ${JSON.stringify(partySetting.seating_layout)}
-
 **考慮事項:**
-- 以下の優先順位で席替えを行ってください。
-- 中間投票で相互に投票し合った男女の参加者は、可能な限り同じテーブルに配置してください。
-- 各テーブルの男女比は可能な限り均等に配置してください。
-- 投票しなかった人、されなかった人は残りの席でランダムで席替えしてください。
+- 以下の優先順位でマッチングを行ってください。
+- 必ず性別が異なる参加者同士で1:1のマッチングしてください。
+- 可能な限り多くの参加者をマッチングしてください。
+- 投票結果が近い参加者同士を優先的にマッチングしてください。例: 同じ投票をした人同士など。
+- 投票結果が誰とも一致しない場合は、マッチングしないでください。
 
 **出力形式:**
 - 以下のJSON形式で出力してください。
-- 純粋なJSON形式で、以下の構造のデータのみを出力してください。**Markdownのコードブロックは絶対に使用しないでください。**
 
 {
-  "seatingArrangement": [
+  "matches": [
     {
-      "tableNumber": (integer),
-      "participants": [
-        {
-          "participantId": "(参加者ID)",
-          "name": "(参加者名)",
-          "gender": "(性別)"
-        },
-        ...
-      ]
+      "voter_id": "参加者ID",
+      "voted_id": "参加者ID"
+    },
+    ...
+  ],
+  "unmatched": [
+    {
+      "id": "参加者ID",
+      "name": "参加者名"
     },
     ...
   ]

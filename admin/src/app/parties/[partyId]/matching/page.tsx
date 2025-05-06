@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import SeatingPlanViewer from '@/components/admin/SeatingPlanViewer';
 import GenerateSeatingPlanButton from '@/components/admin/GenerateSeatingPlanButton';
+import GenerateFinalMatchingButton from '@/components/admin/GenerateFinalMatchingButton';
 import {
   getParty,
   getParticipants,
@@ -11,8 +12,12 @@ import {
   getSeatingPlan,
   createOrUpdateSeatingPlan,
   updateParty,
+  createMatches,
 } from '@/lib/db/queries';
-import { generateSeatingPlan as generateGeminiSeatingPlan } from '@/lib/ai/gemini';
+import {
+  generateSeatingPlan as generateGeminiSeatingPlan,
+  generateFinalMatching as generateGeminiFinalMatching,
+} from '@/lib/ai/gemini';
 
 interface MatchingPageProps {
   params: Promise<{
@@ -76,6 +81,41 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
     } catch (error) {
       console.error('Error parsing Gemini response:', error);
       throw new Error('座席レイアウトの解析に失敗しました');
+    }
+
+    redirect(`/parties/${partyId}/matching`);
+  }
+
+  async function handleGenerateAIFinalMatching() {
+    'use server';
+
+    const party = await getParty(partyId);
+    if (!party) {
+      throw new Error('パーティが見つかりません');
+    }
+
+    const participants = await getParticipants(partyId);
+    const finalVotes = await getVotes(partyId, 'final');
+
+    if (finalVotes.length === 0) {
+      throw new Error('最終投票がありません');
+    }
+
+    try {
+      // Generate final matching using Gemini AI
+      const { matches } = await generateGeminiFinalMatching(party, participants, finalVotes);
+      if (matches && matches.length !== 0) {
+        // Save the final matches to the database
+        await createMatches(
+          partyId,
+          matches.map(match => ({
+            ...match,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Error generating final matching:', error);
+      throw error;
     }
 
     redirect(`/parties/${partyId}/matching`);
@@ -309,6 +349,14 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               <p className="text-sm mb-1">マッチング数: {finalMatches.length}</p>
             </div>
 
+            <div className="flex gap-4">
+              <GenerateFinalMatchingButton
+                onGenerate={handleGenerateAIFinalMatching}
+                disabled={finalVotes.length === 0}
+                hasExistingMatches={finalMatches.length > 0}
+              />
+            </div>
+
             {finalMatches.length > 0 && (
               <div className="mt-6">
                 <h4 className="text-base font-medium mb-2">マッチング結果</h4>
@@ -324,29 +372,41 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
                       <div key={match.id} className="w-full sm:w-[45%] md:w-[30%]">
                         <div className="bg-white rounded-lg shadow">
                           <div className="p-4">
-                            <div className="flex justify-between items-center mb-2">
+                            <div
+                              className={`flex justify-between items-center mb-2 ${
+                                participant1.gender === 'male'
+                                  ? 'bg-primary-light text-blue-400'
+                                  : 'bg-secondary-light text-pink-400'
+                              }`}
+                            >
                               <span className="text-sm">
-                                {participant1.name} (#{participant1.participant_number})
+                                {participant1.participant_number}番 ({participant1.name})
                               </span>
                               <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                   participant1.gender === 'male'
-                                    ? 'bg-primary-light text-primary-dark'
-                                    : 'bg-secondary-light text-secondary-dark'
+                                    ? 'bg-primary-light text-blue-400'
+                                    : 'bg-secondary-light text-pink-400'
                                 }`}
                               >
                                 {participant1.gender === 'male' ? '男性' : '女性'}
                               </span>
                             </div>
-                            <div className="flex justify-between items-center">
+                            <div
+                              className={`flex justify-between items-center mb-2 ${
+                                participant2.gender === 'male'
+                                  ? 'bg-primary-light text-blue-400'
+                                  : 'bg-secondary-light text-pink-400'
+                              }`}
+                            >
                               <span className="text-sm">
-                                {participant2.name} (#{participant2.participant_number})
+                                {participant2.participant_number}番 ({participant2.name})
                               </span>
                               <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                   participant2.gender === 'male'
-                                    ? 'bg-primary-light text-primary-dark'
-                                    : 'bg-secondary-light text-secondary-dark'
+                                    ? 'bg-primary-light text-blue-400'
+                                    : 'bg-secondary-light text-pink-400'
                                 }`}
                               >
                                 {participant2.gender === 'male' ? '男性' : '女性'}

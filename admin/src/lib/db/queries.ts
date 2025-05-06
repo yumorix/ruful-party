@@ -417,3 +417,26 @@ export async function createOrUpdateSeatingPlan(
     return data as SeatingPlan;
   }
 }
+
+export async function createMatches(
+  partyId: string,
+  matches: Omit<Match, 'id' | 'created_at'>[]
+): Promise<Match[]> {
+  const now = new Date().toISOString();
+
+  const matchInserts = matches.map(match => ({
+    ...match,
+    id: ulid(),
+    party_id: partyId,
+    created_at: now,
+  }));
+
+  const { data, error } = await supabase.from('matches').insert(matchInserts).select();
+
+  if (error) {
+    console.error('Error creating matches:', error);
+    throw error;
+  }
+
+  return data as Match[];
+}
