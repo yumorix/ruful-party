@@ -122,7 +122,12 @@ export default async function ParticipantDetailPage(props: ParticipantDetailPage
                 <div>
                   <p className="text-sm text-gray-500">QRコードURL</p>
                   <p className="font-medium break-all">
-                    {`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/vote?token=${participant.access_token}`}
+                    {`${
+                      process.env.ENV === 'production'
+                        ? process.env.NEXT_PUBLIC_MATCHING_APP_PRODUCTION_URL ||
+                          'https://ruful-party-matching-app.vercel.app'
+                        : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+                    }/vote?token=${participant.access_token}`}
                   </p>
                 </div>
               )}
