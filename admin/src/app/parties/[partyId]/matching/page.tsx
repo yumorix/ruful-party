@@ -8,7 +8,6 @@ import {
   getPartySetting,
   getMatches,
   getSeatingPlan,
-  createMatches,
   createOrUpdateSeatingPlan,
   updateParty,
 } from '@/lib/db/queries';
@@ -36,7 +35,6 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
   const interimMatches = await getMatches(partyId, 'interim');
   const finalMatches = await getMatches(partyId, 'final');
   const interimSeatingPlan = await getSeatingPlan(partyId, 'interim');
-  // const finalSeatingPlan = await getSeatingPlan(partyId, 'final');
 
   async function handleGenerateAISeatingPlan() {
     'use server';
@@ -298,16 +296,6 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               <p className="text-sm mb-1">投票数: {finalVotes.length}</p>
               <p className="text-sm mb-1">マッチング数: {finalMatches.length}</p>
             </div>
-
-            {/* <form action={handleGenerateFinalMatches}>
-              <button
-                className="px-4 py-2 rounded-lg font-medium bg-red-600 text-white hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                type="submit"
-                disabled={finalVotes.length === 0 || !settings}
-              >
-                {finalMatches.length > 0 ? '最終マッチングを再生成' : '最終マッチングを生成'}
-              </button>
-            </form> */}
 
             {finalMatches.length > 0 && (
               <div className="mt-6">

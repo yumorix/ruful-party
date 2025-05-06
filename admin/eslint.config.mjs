@@ -29,7 +29,8 @@ const eslintConfig = [
     files: ['**/*.{js,jsx,ts,tsx}'],
     rules: {
       // Add custom rules here
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
