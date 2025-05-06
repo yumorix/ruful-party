@@ -6,14 +6,14 @@ import {
 } from '@/lib/db/queries';
 import ResultClient from '@/components/ResultClient';
 
-type SearchParams = {
-  params: Promise<{
+interface ResultPageProps {
+  searchParams: Promise<{
     token: string;
   }>;
-};
+}
 
-export default async function ResultPage({ params }: SearchParams) {
-  const token = (await params).token as string;
+export default async function ResultPage({ searchParams }: ResultPageProps) {
+  const token = (await searchParams).token as string;
 
   // Loading state is handled by Suspense in the parent layout
   if (!token) {

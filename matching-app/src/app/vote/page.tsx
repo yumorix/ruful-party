@@ -8,13 +8,15 @@ import { redirect } from 'next/navigation';
 import VoteClient from '@/components/VoteClient';
 import { isRedirectError, RedirectError } from '@/lib/errors/RedirectError';
 
-type VotePageProps = {
-  params: Promise<{
+interface VotePageProps {
+  searchParams: Promise<{
     token: string;
   }>;
-};
-export default async function VotePage({ params }: VotePageProps) {
-  const token = (await params).token as string;
+}
+
+export default async function VotePage({ searchParams }: VotePageProps) {
+  const token = (await searchParams).token as string;
+  console.log('VotePage token:', token);
 
   // Loading state is handled by Suspense in the parent layout
   if (!token) {
