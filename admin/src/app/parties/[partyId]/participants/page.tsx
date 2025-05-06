@@ -261,7 +261,12 @@ export default async function ParticipantsPage(props: ParticipantsPageProps) {
       <div className="bg-white rounded-lg shadow p-6">
         <QRCodeGenerator
           participants={participants}
-          baseUrl={process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}
+          baseUrl={
+            process.env.ENV === 'production'
+              ? process.env.NEXT_PUBLIC_MATCHING_APP_PRODUCTION_URL ||
+                'https://ruful-party-matching-app.vercel.app'
+              : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+          }
           onGenerateAll={handleGenerateAllQRCodes}
           isGenerating={false}
         />
