@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import SeatingPlanViewer from '@/components/admin/SeatingPlanViewer';
+import GenerateSeatingPlanButton from '@/components/admin/GenerateSeatingPlanButton';
 import {
   getParty,
   getParticipants,
@@ -196,15 +197,11 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
             </div>
 
             <div className="flex gap-4">
-              <form action={handleGenerateAISeatingPlan}>
-                <button
-                  className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  type="submit"
-                  disabled={interimVotes.length === 0 || !settings}
-                >
-                  {interimSeatingPlan ? 'AIで席替えを再生成' : 'AIで席替えを生成'}
-                </button>
-              </form>
+              <GenerateSeatingPlanButton
+                onGenerate={handleGenerateAISeatingPlan}
+                disabled={interimVotes.length === 0 || !settings}
+                hasExistingPlan={!!interimSeatingPlan}
+              />
             </div>
 
             {interimMatches.length > 0 && (
