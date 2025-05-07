@@ -9,72 +9,91 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          main: '#1976d2', // blue[700]
-          light: '#42a5f5', // blue[400]
-          dark: '#1565c0', // blue[800]
+          main: '#3d5a80', // Elegant navy blue
+          light: '#98c1d9', // Light blue
+          dark: '#293241', // Dark navy
         },
         secondary: {
-          main: '#e91e63', // pink[500]
-          light: '#f06292', // pink[300]
-          dark: '#c2185b', // pink[700]
+          main: '#d8a48f', // Soft coral/rose gold
+          light: '#f2d0c2', // Light coral
+          dark: '#c27c66', // Dark coral
         },
         error: {
-          main: '#f44336', // red[500]
-          light: '#ef5350', // red[400]
-          dark: '#d32f2f', // red[700]
+          main: '#c1666b', // Muted red
+          light: '#e48f93', // Light red
+          dark: '#a34e52', // Dark red
         },
         success: {
-          main: '#4caf50', // green[500]
-          light: '#66bb6a', // green[400]
-          dark: '#388e3c', // green[700]
+          main: '#739e82', // Muted green
+          light: '#a3c4ae', // Light green
+          dark: '#5c7e68', // Dark green
         },
         info: {
-          main: '#2196f3', // blue[500]
-          light: '#42a5f5', // blue[400]
-          dark: '#1976d2', // blue[700]
+          main: '#8896ab', // Muted blue-gray
+          light: '#b1bbc8', // Light blue-gray
+          dark: '#6e7a8c', // Dark blue-gray
         },
         warning: {
-          main: '#ff9800', // orange[500]
-          light: '#ffb74d', // orange[300]
-          dark: '#f57c00', // orange[700]
+          main: '#d4b483', // Muted gold
+          light: '#e6d2b3', // Light gold
+          dark: '#b39059', // Dark gold
         },
         background: {
-          default: '#f5f5f5',
+          default: '#f8f5f2', // Warm off-white
           paper: '#ffffff',
+          card: '#fcfbf9', // Slightly off-white for cards
         },
         text: {
-          primary: 'rgba(0, 0, 0, 0.87)',
-          secondary: 'rgba(0, 0, 0, 0.6)',
-          disabled: 'rgba(0, 0, 0, 0.38)',
+          primary: '#2d3748', // Dark slate
+          secondary: '#4a5568', // Medium slate
+          disabled: '#a0aec0', // Light slate
+          accent: '#3d5a80', // Navy accent
+        },
+        accent: {
+          gold: '#d4b483',
+          rose: '#d8a48f',
+          navy: '#3d5a80',
         },
       },
       borderRadius: {
-        'none': '0',
-        'sm': '0.125rem',
+        none: '0',
+        sm: '0.125rem',
         DEFAULT: '0.25rem',
-        'md': '0.375rem',
-        'lg': '0.5rem',
-        'xl': '0.75rem',
+        md: '0.375rem',
+        lg: '0.5rem',
+        xl: '0.75rem',
         '2xl': '1rem',
         '3xl': '1.5rem',
-        'full': '9999px',
+        full: '9999px',
       },
       boxShadow: {
-        sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+        sm: '0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+        md: '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04)',
+        lg: '0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+        xl: '0 20px 25px -5px rgba(0, 0, 0, 0.07), 0 10px 10px -5px rgba(0, 0, 0, 0.03)',
+        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+        elegant: '0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03)',
+        card: '0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
+        inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.04)',
         none: 'none',
       },
       fontFamily: {
-        sans: ['"Noto Sans JP"', "sans-serif"],
+        sans: ['"Noto Sans JP"', 'sans-serif'],
+        serif: ['"Noto Serif JP"', 'serif'],
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'pattern-dots': 'radial-gradient(#3d5a80 0.5px, transparent 0.5px)',
+        'pattern-lines':
+          'linear-gradient(to right, #f2d0c2 1px, transparent 1px), linear-gradient(to bottom, #f2d0c2 1px, transparent 1px)',
+      },
+      backgroundSize: {
+        'dots-sm': '10px 10px',
+        'dots-md': '20px 20px',
+        'lines-sm': '20px 20px',
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
-}
+  plugins: [require('@tailwindcss/forms')],
+};
