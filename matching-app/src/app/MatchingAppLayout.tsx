@@ -6,19 +6,28 @@ export default function MatchingAppLayout({ children }: { children: React.ReactN
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="bg-primary-main shadow-md z-10">
-        <div className="flex items-center justify-center px-4 h-16">
-          <h1 className="text-xl text-black">RufulParty</h1>
+      <header className="bg-white border-b border-gray-100 shadow-sm z-10 relative">
+        <div className="absolute inset-0 bg-pattern-dots bg-dots-sm opacity-5"></div>
+        <div className="flex items-center justify-center px-6 h-20 relative">
+          <div className="absolute left-0 top-0 w-full h-1 bg-gradient-to-r from-secondary-light via-primary-light to-secondary-light opacity-70"></div>
+          <h1 className="text-2xl font-serif text-primary-dark tracking-wide flex items-center">
+            <span className="text-accent-gold mr-1">R</span>uful
+            <span className="text-accent-rose mx-1">P</span>arty
+            <span className="decorative-dot"></span>
+          </h1>
         </div>
       </header>
 
       {/* Page content */}
-      <main className="flex-1 overflow-auto p-4 bg-background-default">
-        <div className="max-w-md mx-auto mt-2">
+      <main className="flex-1 overflow-auto p-6 bg-background-default">
+        <div className="max-w-md mx-auto mt-4">
           <Suspense
             fallback={
               <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-main"></div>
+                <div className="relative">
+                  <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary-light opacity-30"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary-main absolute top-0 left-0"></div>
+                </div>
               </div>
             }
           >
@@ -28,8 +37,12 @@ export default function MatchingAppLayout({ children }: { children: React.ReactN
       </main>
 
       {/* Footer */}
-      <footer className="bg-white p-4 shadow-inner text-center text-sm text-gray-500">
-        <p>© 2025 RufulParty</p>
+      <footer className="bg-white border-t border-gray-100 p-6 text-center text-sm text-gray-500 relative">
+        <div className="absolute inset-0 bg-pattern-dots bg-dots-sm opacity-5"></div>
+        <div className="relative">
+          <div className="decorative-line w-24 mx-auto mb-3"></div>
+          <p className="font-serif tracking-wide">© 2025 RufulParty</p>
+        </div>
       </footer>
     </div>
   );

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Party validation
 export const partySchema = z.object({
-  name: z.string().min(1, '名前は必須です'),
+  name: z.string(),
   date: z.string().min(1, '日時は必須です'),
   location: z.string().min(1, '場所は必須です'),
   capacity: z.number().min(2, '定員は2人以上必要です'),
@@ -16,7 +16,7 @@ export type PartyFormData = z.infer<typeof partySchema>;
 export const participantSchema = z.object({
   party_id: z.string().min(1, 'パーティIDは必須です'),
   participant_number: z.number().min(1, '参加者番号は1以上必要です'),
-  name: z.string().min(1, '名前は必須です'),
+  name: z.string(),
   gender: z.enum(['male', 'female']),
   access_token: z.string().optional(),
 });
