@@ -1,17 +1,45 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const [isValidating, setIsValidating] = useState(false);
 
   useEffect(() => {
-    // If token is provided in query params, redirect to vote page
+    // If token is provided in query params, validate and redirect
     if (token) {
-      router.push(`/vote?token=${token}`);
+      setIsValidating(true);
+
+      // Validate the token and check if name registration is needed
+      fetch('/api/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.needsNameRegistration) {
+            // Redirect to register page if name registration is needed
+            router.push(`/register?token=${token}`);
+          } else {
+            // Redirect to vote page if name is already set
+            router.push(`/vote?token=${token}`);
+          }
+        })
+        .catch(error => {
+          console.error('Token validation error:', error);
+          // On error, redirect to vote page and let it handle the error
+          router.push(`/vote?token=${token}`);
+        })
+        .finally(() => {
+          setIsValidating(false);
+        });
     }
   }, [token, router]);
 

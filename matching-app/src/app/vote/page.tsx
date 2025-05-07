@@ -8,6 +8,9 @@ import { redirect } from 'next/navigation';
 import VoteClient from '@/components/VoteClient';
 import { isRedirectError, RedirectError } from '@/lib/errors/RedirectError';
 
+// Default name pattern to check if name needs to be updated
+const DEFAULT_NAME_PATTERN = /^参加者\d+$/; // Matches "参加者1", "参加者2", etc.
+
 interface VotePageProps {
   searchParams: Promise<{
     token: string;
@@ -52,6 +55,16 @@ export default async function VotePage({ searchParams }: VotePageProps) {
           </div>
         </div>
       );
+    }
+
+    // Check if the participant needs to register their name
+    const needsNameRegistration =
+      !participant.name ||
+      participant.name.trim() === '' ||
+      DEFAULT_NAME_PATTERN.test(participant.name);
+
+    if (needsNameRegistration) {
+      throw new RedirectError(`/register?token=${token}`);
     }
 
     // Get party info

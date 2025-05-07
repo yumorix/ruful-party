@@ -7,6 +7,10 @@ import {
 } from '@/lib/db/queries';
 import { Participant } from '@/lib/db/supabase';
 import ResultClient from '@/components/ResultClient';
+import { redirect } from 'next/navigation';
+
+// Default name pattern to check if name needs to be updated
+const DEFAULT_NAME_PATTERN = /^参加者\d+$/; // Matches "参加者1", "参加者2", etc.
 
 interface ResultPageProps {
   searchParams: Promise<{
@@ -45,6 +49,17 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
           </div>
         </div>
       );
+    }
+
+    // Check if the participant needs to register their name
+    const needsNameRegistration =
+      !participant.name ||
+      participant.name.trim() === '' ||
+      DEFAULT_NAME_PATTERN.test(participant.name);
+
+    if (needsNameRegistration) {
+      // Redirect to register page if name registration is needed
+      redirect(`/register?token=${token}`);
     }
 
     // Get party info
