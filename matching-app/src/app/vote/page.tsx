@@ -19,7 +19,6 @@ interface VotePageProps {
 
 export default async function VotePage({ searchParams }: VotePageProps) {
   const token = (await searchParams).token as string;
-  console.log('VotePage token:', token);
 
   // Loading state is handled by Suspense in the parent layout
   if (!token) {

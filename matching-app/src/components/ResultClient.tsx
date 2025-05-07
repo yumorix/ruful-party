@@ -111,7 +111,7 @@ export default function ResultClient({
         <div className="card-content relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-pattern-dots bg-dots-md opacity-5 -mr-10 -mt-10 rounded-full"></div>
 
-          <h2 className="text-xl font-serif text-primary-dark mb-2">{party.name}</h2>
+          <h2 className="text-xl font-serif text-primary-dark mb-2 content-center">{party.name}</h2>
           <div className="flex items-center mb-4">
             <div className="h-px flex-grow bg-gray-100"></div>
             <span className="px-2 text-xl text-text-secondary font-medium">
