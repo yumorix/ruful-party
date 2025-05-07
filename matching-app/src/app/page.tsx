@@ -7,13 +7,10 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const [isValidating, setIsValidating] = useState(false);
 
   useEffect(() => {
     // If token is provided in query params, validate and redirect
     if (token) {
-      setIsValidating(true);
-
       // Validate the token and check if name registration is needed
       fetch('/api/validate', {
         method: 'POST',
@@ -36,9 +33,6 @@ export default function Home() {
           console.error('Token validation error:', error);
           // On error, redirect to vote page and let it handle the error
           router.push(`/vote?token=${token}`);
-        })
-        .finally(() => {
-          setIsValidating(false);
         });
     }
   }, [token, router]);

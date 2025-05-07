@@ -11,8 +11,8 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [participant, setParticipant] = useState<any>(null);
-  const [party, setParty] = useState<any>(null);
+  const [participant, setParticipant] = useState<any>(null); //eslint-disable-line @typescript-eslint/no-explicit-any
+  const [party, setParty] = useState<any>(null); //eslint-disable-line @typescript-eslint/no-explicit-any
 
   useEffect(() => {
     // Validate token and get participant info
