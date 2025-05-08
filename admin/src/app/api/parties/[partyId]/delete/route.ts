@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteParty } from '@/lib/db/queries';
 
-export async function DELETE(request: NextRequest, { params }: { params: { partyId: string } }) {
+interface RouteParams {
+  params: Promise<{
+    partyId: string;
+  }>;
+}
+
+export async function DELETE(request: NextRequest, props: RouteParams) {
   try {
-    const { partyId } = params;
+    const { partyId } = await props.params;
 
     if (!partyId) {
       return NextResponse.json({ error: 'パーティIDが必要です' }, { status: 400 });
