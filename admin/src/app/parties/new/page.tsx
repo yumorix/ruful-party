@@ -2,12 +2,14 @@ import Link from 'next/link';
 import PartyForm from '../../../components/admin/PartyForm';
 import { createParty } from '../../../lib/db/queries';
 import { PartyFormData } from '../../../lib/utils/validation';
+import { redirect } from 'next/navigation';
 
 export default function NewPartyPage() {
   async function handleSubmit(data: PartyFormData) {
     'use server';
 
-    await createParty(data);
+    const party = await createParty(data);
+    redirect(`/parties/${party.id}`);
   }
 
   return (

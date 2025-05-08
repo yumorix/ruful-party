@@ -9,7 +9,7 @@ interface Party {
   id: string;
   name: string;
   status: 'preparing' | 'active' | 'closed';
-  current_mode: 'interim' | 'final' | 'closed';
+  current_mode: 'interim' | 'final' | 'final-result' | 'closed';
 }
 
 interface Partner {
@@ -111,15 +111,19 @@ export default function ResultClient({
         <div className="card-content relative">
           <div className="absolute top-0 right-0 w-32 h-32 bg-pattern-dots bg-dots-md opacity-5 -mr-10 -mt-10 rounded-full"></div>
 
-          <h2 className="text-xl font-serif text-primary-dark mb-2 content-center">{party.name}</h2>
+          <h2 className="text-xl font-serif text-primary-dark mb-2 content-center text-center">
+            {party.name}
+          </h2>
           <div className="flex items-center mb-4">
             <div className="h-px flex-grow bg-gray-100"></div>
             <span className="px-2 text-xl text-text-secondary font-medium">
               {party.current_mode === 'interim'
                 ? '中間結果'
                 : party.current_mode === 'final'
-                  ? '最終結果'
-                  : '結果'}
+                  ? '最終投票'
+                  : party.current_mode === 'final-result'
+                    ? '最終結果発表'
+                    : '結果'}
             </span>
             <div className="h-px flex-grow bg-gray-100"></div>
           </div>
@@ -268,70 +272,121 @@ export default function ResultClient({
         </div>
       )}
 
-      {/* Final Matches (for final results) */}
-      {party.current_mode === 'final' && (
-        <div className="card w-full max-w-md mb-6 shadow-card overflow-hidden animate-fade-in animate-delay-100">
-          <div className="card-content">
-            <h3 className="font-serif text-lg text-primary-dark mb-4 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2 text-accent-rose"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              マッチング結果
-            </h3>
+      {/* Final Matches (for final voting or final result) */}
+      {party.current_mode === 'final-result' && (
+        <div
+          className={`card w-full max-w-md mb-6 ${
+            party.current_mode === 'final-result' ? 'shadow-lg' : 'shadow-card'
+          } overflow-hidden animate-fade-in animate-delay-100`}
+        >
+          <div
+            className={`${
+              party.current_mode === 'final-result'
+                ? 'bg-gradient-to-r from-accent-rose via-accent-gold to-accent-rose p-0.5'
+                : ''
+            }`}
+          >
+            <div
+              className={`card-content ${
+                party.current_mode === 'final-result' ? 'bg-white rounded-lg' : ''
+              }`}
+            >
+              <h3 className="font-serif text-lg text-primary-dark mb-4 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 mr-2 ${
+                    party.current_mode === 'final-result' ? 'text-accent-gold' : 'text-accent-rose'
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                {party.current_mode === 'final-result'
+                  ? '最終マッチング結果発表'
+                  : 'マッチング結果'}
+              </h3>
 
-            <div className="decorative-line w-24 mb-6"></div>
+              <div className="decorative-line w-24 mb-6"></div>
 
-            {finalMatches.length === 0 ? (
-              <div className="bg-gray-50 p-8 rounded-lg text-center border border-gray-100">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
+              {finalMatches.length === 0 ? (
+                <div className="bg-gray-50 p-8 rounded-lg text-center border border-gray-100">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-gray-500 font-serif mb-2">マッチング結果はありません</p>
+                  <p className="text-xs text-gray-400">
+                    他の参加者とのマッチングが成立しませんでした
+                  </p>
                 </div>
-                <p className="text-gray-500 font-serif mb-2">マッチング結果はありません</p>
-                <p className="text-xs text-gray-400">
-                  他の参加者とのマッチングが成立しませんでした
-                </p>
-              </div>
-            ) : (
-              <ul className="space-y-4">
-                {finalMatches.map(match => (
-                  <li
-                    key={match.id}
-                    className="p-5 bg-gradient-to-br from-primary-light to-secondary-light bg-opacity-10 rounded-xl shadow-sm border border-secondary-light border-opacity-20 overflow-hidden relative"
-                  >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-pattern-dots bg-dots-md opacity-10 -mr-6 -mt-6 rounded-full"></div>
-                    <div className="flex items-center justify-between relative">
-                      <div>
-                        <div className="font-serif text-xl mb-2 text-primary-dark">
-                          {match.partner.name}
+              ) : (
+                <ul className="space-y-4">
+                  {finalMatches.map(match => (
+                    <li
+                      key={match.id}
+                      className={`p-5 ${
+                        party.current_mode === 'final-result'
+                          ? 'bg-gradient-to-br from-accent-rose/10 to-accent-gold/10'
+                          : 'bg-gradient-to-br from-primary-light to-secondary-light bg-opacity-10'
+                      } rounded-xl shadow-sm border ${
+                        party.current_mode === 'final-result'
+                          ? 'border-accent-gold border-opacity-30'
+                          : 'border-secondary-light border-opacity-20'
+                      } overflow-hidden relative`}
+                    >
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-pattern-dots bg-dots-md opacity-10 -mr-6 -mt-6 rounded-full"></div>
+                      <div className="flex items-center justify-between relative">
+                        <div>
+                          <div className="font-serif text-xl mb-2 text-primary-dark">
+                            {match.partner.name}
+                          </div>
+                          <div className="flex items-center text-sm text-text-secondary">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={`h-4 w-4 mr-1 ${
+                                party.current_mode === 'final-result'
+                                  ? 'text-accent-gold'
+                                  : 'text-accent-rose'
+                              }`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                              />
+                            </svg>
+                            おめでとうございます！
+                            <br />
+                            相互マッチングが成立しました！
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm text-text-secondary">
+                        <div className="bg-success-light bg-opacity-20 text-success-dark rounded-full p-3 shadow-sm border border-success-light border-opacity-30">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1 text-accent-rose"
+                            className="h-6 w-6"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -340,39 +395,22 @@ export default function ResultClient({
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                              d="M5 13l4 4L19 7"
                             />
                           </svg>
-                          相互マッチングが成立しました！
                         </div>
                       </div>
-                      <div className="bg-success-light bg-opacity-20 text-success-dark rounded-full p-3 shadow-sm border border-success-light border-opacity-30">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}
 
       {/* Waiting message if party is active but no results yet */}
-      {party.status === 'active' && matches.length === 0 && (
+      {party.status === 'active' && party.current_mode === 'final' && (
         <div className="card w-full max-w-md mb-6 shadow-card overflow-hidden animate-fade-in animate-delay-100">
           <div className="card-content text-center">
             <div className="w-16 h-16 bg-primary-light bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">

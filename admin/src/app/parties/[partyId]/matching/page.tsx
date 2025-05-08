@@ -3,6 +3,7 @@ import Link from 'next/link';
 import SeatingPlanViewer from '@/components/admin/SeatingPlanViewer';
 import GenerateSeatingPlanButton from '@/components/admin/GenerateSeatingPlanButton';
 import GenerateFinalMatchingButton from '@/components/admin/GenerateFinalMatchingButton';
+import { PartyCurrentMode } from '@/lib/utils/validation';
 import {
   getParty,
   getParticipants,
@@ -121,7 +122,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
     redirect(`/parties/${partyId}/matching`);
   }
 
-  async function handleChangeMode(mode: 'interim' | 'final' | 'closed') {
+  async function handleChangeMode(mode: PartyCurrentMode) {
     'use server';
 
     await updateParty(partyId, {
@@ -164,7 +165,9 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
                 ? 'bg-blue-100 text-blue-800'
                 : party.current_mode === 'final'
                   ? 'bg-red-100 text-red-800'
-                  : 'bg-gray-100 text-gray-800'
+                  : party.current_mode === 'final-result'
+                    ? 'bg-amber-100 text-amber-800'
+                    : 'bg-gray-100 text-gray-800'
             }
           `}
           >
@@ -172,7 +175,9 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               ? '中間投票'
               : party.current_mode === 'final'
                 ? '最終投票'
-                : 'クローズ'}
+                : party.current_mode === 'final-result'
+                  ? '最終結果発表'
+                  : 'クローズ'}
           </span>
         </h2>
 
@@ -199,6 +204,18 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               type="submit"
             >
               最終投票モード
+            </button>
+          </form>
+          <form action={handleChangeMode.bind(null, 'final-result')}>
+            <button
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                party.current_mode === 'final-result'
+                  ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                  : 'border border-amber-300 text-amber-800 hover:bg-amber-50'
+              }`}
+              type="submit"
+            >
+              最終結果発表モード
             </button>
           </form>
           <form action={handleChangeMode.bind(null, 'closed')}>

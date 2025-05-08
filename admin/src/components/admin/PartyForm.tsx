@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parse } from 'date-fns';
 import { partySchema, PartyFormData } from '../../lib/utils/validation';
 import { Party } from '../../lib/db/supabase';
-import { useRouter } from 'next/navigation';
 
 interface PartyFormProps {
   initialData?: Partial<Party>;
@@ -15,7 +14,6 @@ interface PartyFormProps {
 }
 
 export default function PartyForm({ initialData, onSubmit, isSubmitting }: PartyFormProps) {
-  const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
@@ -38,7 +36,6 @@ export default function PartyForm({ initialData, onSubmit, isSubmitting }: Party
     try {
       setSubmitError(null);
       await onSubmit(formData);
-      router.push(`/parties/${initialData?.id}`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('パーティの保存中にエラーが発生しました。もう一度お試しください。');
@@ -235,6 +232,7 @@ export default function PartyForm({ initialData, onSubmit, isSubmitting }: Party
                     >
                       <option value="interim">中間投票</option>
                       <option value="final">最終投票</option>
+                      <option value="final-result">最終結果発表</option>
                       <option value="closed">クローズ</option>
                     </select>
                     {errors.current_mode && (
