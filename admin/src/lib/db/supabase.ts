@@ -11,7 +11,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 // Type aliases using database.types.ts
 export type Party = Tables<'parties'> & {
   status: 'preparing' | 'active' | 'closed';
-  current_mode: 'interim' | 'final' | 'closed';
+  current_mode: 'interim' | 'final' | 'final-result' | 'closed';
 };
 
 export type PartyInsert = TablesInsert<'parties'>;

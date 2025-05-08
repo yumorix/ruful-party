@@ -232,6 +232,7 @@ export default function PartyForm({ initialData, onSubmit, isSubmitting }: Party
                     >
                       <option value="interim">中間投票</option>
                       <option value="final">最終投票</option>
+                      <option value="final-result">最終結果発表</option>
                       <option value="closed">クローズ</option>
                     </select>
                     {errors.current_mode && (

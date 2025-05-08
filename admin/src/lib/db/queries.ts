@@ -69,7 +69,10 @@ export async function createParty(party: PartyFormData): Promise<Party> {
   return data as Party;
 }
 
-export async function updateParty(id: string, party: Partial<PartyFormData>): Promise<Party> {
+export async function updateParty(
+  id: string,
+  party: Partial<PartyFormData> & { current_mode?: 'interim' | 'final' | 'final-result' | 'closed' }
+): Promise<Party> {
   const now = new Date().toISOString();
 
   const partyData: PartyUpdate = {
