@@ -7,6 +7,7 @@ import { partySettingsSchema, PartySettingsFormData, TableData } from '../../lib
 import { PartySetting } from '../../lib/db/supabase';
 import TableConfigEditor from './TableConfigEditor';
 import { ulid } from 'ulid';
+import { useRouter } from 'next/navigation';
 
 interface SettingFormProps {
   partyId: string;
@@ -21,6 +22,7 @@ export default function SettingForm({
   onSubmit,
   isSubmitting,
 }: SettingFormProps) {
+  const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [tables, setTables] = useState<TableData[]>([]);
@@ -122,6 +124,7 @@ export default function SettingForm({
       data.seating_layout.tables = tables;
 
       await onSubmit(data);
+      router.push(`/parties/${partyId}`);
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitError('設定の保存中にエラーが発生しました。もう一度お試しください。');
