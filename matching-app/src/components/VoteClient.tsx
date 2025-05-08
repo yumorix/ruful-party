@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { current_type } from '@/lib/db/queries';
 
 interface Participant {
   id: string;
@@ -12,7 +13,7 @@ interface Participant {
 interface Party {
   id: string;
   name: string;
-  current_mode: 'interim' | 'final' | 'closed';
+  current_mode: current_type;
 }
 
 interface VoteOption {

@@ -2,6 +2,9 @@ import { supabase } from './supabase';
 import { Party, Participant, VoteInsert, Match as BaseMatch, SeatingPlan } from './supabase';
 import { ulid } from 'ulid';
 
+// Define current_type for use across the application
+export type current_type = 'interim' | 'final' | 'final-result' | 'closed';
+
 // Extended Match type to include joined participants data
 interface Match extends BaseMatch {
   participants1: {
@@ -89,7 +92,7 @@ export async function getPartyById(partyId: string): Promise<Party | null> {
 export async function checkExistingVotes(
   participantId: string,
   partyId: string,
-  voteType: 'interim' | 'final'
+  voteType: current_type
 ): Promise<boolean> {
   const { data, error } = await supabase
     .from('votes')
@@ -185,7 +188,7 @@ export async function submitVotes(
 export async function getMatchesByParticipant(
   participantId: string,
   partyId: string,
-  matchType?: 'interim' | 'final'
+  matchType?: current_type
 ): Promise<Match[]> {
   let query = supabase
     .from('matches')
@@ -221,7 +224,7 @@ export async function getMatchesByParticipant(
 // Seating plan queries
 export async function getSeatingPlan(
   partyId: string,
-  planType: 'interim' | 'final'
+  planType: current_type
 ): Promise<SeatingPlan | null> {
   const { data, error } = await supabase
     .from('seating_plans')

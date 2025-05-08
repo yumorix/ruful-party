@@ -4,12 +4,13 @@ import Image from 'next/image';
 import SeatingPlanViewer from './SeatingPlanViewer';
 
 import { Participant } from '@/lib/db/supabase';
+import { current_type } from '@/lib/db/queries';
 
 interface Party {
   id: string;
   name: string;
   status: 'preparing' | 'active' | 'closed';
-  current_mode: 'interim' | 'final' | 'final-result' | 'closed';
+  current_mode: current_type;
 }
 
 interface Partner {
@@ -20,7 +21,7 @@ interface Partner {
 
 interface Match {
   id: string;
-  match_type: 'interim' | 'final';
+  match_type: current_type;
   table_number: number | null;
   seat_positions: any | null; //eslint-disable-line @typescript-eslint/no-explicit-any
   partner: Partner;

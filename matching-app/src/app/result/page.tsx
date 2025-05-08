@@ -4,6 +4,7 @@ import {
   getMatchesByParticipant,
   getSeatingPlan,
   getAllParticipantsByParty,
+  current_type,
 } from '@/lib/db/queries';
 import { Participant } from '@/lib/db/supabase';
 import ResultClient from '@/components/ResultClient';

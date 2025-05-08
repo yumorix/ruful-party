@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getParticipantByToken, getParty, createVote, getVotes } from '../../../../lib/db/queries';
+import {
+  getParticipantByToken,
+  getParty,
+  createVote,
+  getVotes,
+  current_type,
+} from '../../../../lib/db/queries';
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,11 +64,18 @@ export async function POST(request: NextRequest) {
       const votedId = body.voted_ids[i];
 
       // Create vote
+      // Handle the vote type based on party's current mode
+      // Only 'interim' and 'final' are valid vote types
+      let vote_type: 'interim' | 'final' = 'final';
+      if (party.current_mode === 'interim') {
+        vote_type = 'interim';
+      }
+
       const vote = await createVote({
         party_id: party.id,
         voter_id: participant.id,
         voted_id: votedId,
-        vote_type: party.current_mode,
+        vote_type,
         rank: i + 1,
       });
 

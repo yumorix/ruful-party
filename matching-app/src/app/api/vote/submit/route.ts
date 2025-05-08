@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { submitVotes } from '@/lib/db/queries';
+import { submitVotes, current_type } from '@/lib/db/queries';
 import { voteSubmissionSchema } from '@/lib/utils/validation';
 import { isValidTokenFormat } from '@/lib/utils/token';
 
