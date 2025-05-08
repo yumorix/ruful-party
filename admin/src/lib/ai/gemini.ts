@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { Party, PartySetting, Match, MatchInsert } from '../db/supabase';
 import { Vote } from '../db/supabase';
 import { Participant } from '../db/supabase';
+import { current_type } from '../db/queries';
 import { generateInterimSeatingPlanPrompt } from './prompts/interim-matching';
 import { generateFinalMatchingPrompt } from './prompts/final-matching';
 import { ulid } from 'ulid';

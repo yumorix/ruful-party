@@ -9,9 +9,11 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 // Type aliases using database.types.ts
+import { current_type } from './queries';
+
 export type Party = Tables<'parties'> & {
   status: 'preparing' | 'active' | 'closed';
-  current_mode: 'interim' | 'final' | 'closed';
+  current_mode: current_type;
 };
 
 export type PartyInsert = TablesInsert<'parties'>;

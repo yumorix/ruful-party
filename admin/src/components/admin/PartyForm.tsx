@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parse } from 'date-fns';
 import { partySchema, PartyFormData } from '../../lib/utils/validation';
 import { Party } from '../../lib/db/supabase';
+import { current_type } from '../../lib/db/queries';
 
 interface PartyFormProps {
   initialData?: Partial<Party>;

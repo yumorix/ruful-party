@@ -17,6 +17,9 @@ import {
 import { ulid } from 'ulid';
 import { PartyFormData, ParticipantFormData, VoteFormData } from '@/lib/utils/validation';
 
+// Define current_type for use across the application
+export type current_type = 'interim' | 'final' | 'final-result' | 'closed';
+
 // Party queries
 export async function getParties(): Promise<Party[]> {
   const { data, error } = await supabase
@@ -71,7 +74,7 @@ export async function createParty(party: PartyFormData): Promise<Party> {
 
 export async function updateParty(
   id: string,
-  party: Partial<PartyFormData> & { current_mode?: 'interim' | 'final' | 'final-result' | 'closed' }
+  party: Partial<PartyFormData> & { current_mode?: current_type }
 ): Promise<Party> {
   const now = new Date().toISOString();
 
@@ -215,7 +218,7 @@ export async function deleteParticipant(id: string): Promise<void> {
 }
 
 // Vote queries
-export async function getVotes(partyId: string, voteType: 'interim' | 'final'): Promise<Vote[]> {
+export async function getVotes(partyId: string, voteType: current_type): Promise<Vote[]> {
   const { data, error } = await supabase
     .from('votes')
     .select('*')
