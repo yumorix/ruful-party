@@ -7,18 +7,21 @@ export const partySchema = z.object({
   location: z.string().min(1, '場所は必須です'),
   capacity: z.number().min(2, '定員は2人以上必要です'),
   status: z.enum(['preparing', 'active', 'closed']),
-  current_mode: z.enum(['interim', 'final', 'final-result', 'closed']),
+  current_mode: z.enum(['pre-voting', 'interim', 'final', 'final-result', 'closed']),
 });
 
 // Define the current_mode type for easier reuse
-export type PartyCurrentMode = 'interim' | 'final' | 'final-result' | 'closed';
+export type PartyCurrentMode = 'pre-voting' | 'interim' | 'final' | 'final-result' | 'closed';
 
 export type PartyFormData = z.infer<typeof partySchema>;
 
 // Participant validation
 export const participantSchema = z.object({
   party_id: z.string().min(1, 'パーティIDは必須です'),
-  participant_number: z.number().min(1, '参加者番号は1以上必要です'),
+  participant_number: z
+    .number()
+    .min(1, '参加者番号は1以上必要です')
+    .int('参加者番号は整数である必要があります'),
   name: z.string(),
   gender: z.enum(['male', 'female']),
   access_token: z.string().optional(),

@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import ParticipantForm from '../../../../../../components/admin/ParticipantForm';
-import { getParty, getParticipant, updateParticipant } from '../../../../../../lib/db/queries';
-import { ParticipantFormData } from '../../../../../../lib/utils/validation';
+import ParticipantForm from '@/components/admin/ParticipantForm';
+import { getParty, getParticipant, updateParticipant, getParticipants } from '@/lib/db/queries';
+import { ParticipantFormData } from '@/lib/utils/validation';
 
 interface EditParticipantPageProps {
   params: Promise<{
@@ -16,6 +16,7 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
   const { partyId, participantId } = params;
 
   const party = await getParty(partyId);
+  const participants = await getParticipants(partyId);
 
   if (!party) {
     notFound();
@@ -65,6 +66,7 @@ export default async function EditParticipantPage(props: EditParticipantPageProp
         partyId={partyId}
         initialData={participant}
         onSubmit={handleSubmit}
+        participants={participants}
         isSubmitting={false}
       />
     </div>

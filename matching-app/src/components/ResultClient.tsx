@@ -124,7 +124,9 @@ export default function ResultClient({
                   ? '最終投票'
                   : party.current_mode === 'final-result'
                     ? '最終結果発表'
-                    : '結果'}
+                    : party.current_mode === 'pre-voting'
+                      ? 'パーティをお楽しみください'
+                      : '結果'}
             </span>
             <div className="h-px flex-grow bg-gray-100"></div>
           </div>

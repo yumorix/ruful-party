@@ -18,7 +18,7 @@ import { ulid } from 'ulid';
 import { PartyFormData, ParticipantFormData, VoteFormData } from '@/lib/utils/validation';
 
 // Define current_type for use across the application
-export type current_type = 'interim' | 'final' | 'final-result' | 'closed';
+export type current_type = 'pre-voting' | 'interim' | 'final' | 'final-result' | 'closed';
 
 // Party queries
 export async function getParties(): Promise<Party[]> {

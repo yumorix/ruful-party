@@ -92,6 +92,26 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
       );
     }
 
+    // Check if it's pre-voting mode
+    if (party.current_mode === 'pre-voting') {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+          <div className="card w-full max-w-md">
+            <div className="card-content text-center">
+              <h2 className="text-xl font-bold text-primary-main mb-4">
+                パーティをお楽しみください
+              </h2>
+              <p className="mb-4">投票はまだ始まっていません。パーティをお楽しみください。</p>
+              <div className="decorative-line w-24 mx-auto mb-4"></div>
+              <p className="text-sm text-text-secondary">
+                投票が始まりましたら、再度アクセスしてください。
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // Get matches for this participant
     const matches = await getMatchesByParticipant(participant.id, party.id);
 

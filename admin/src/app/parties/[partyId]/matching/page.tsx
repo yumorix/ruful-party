@@ -161,27 +161,43 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
             className={`
             inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
             ${
-              party.current_mode === 'interim'
-                ? 'bg-blue-100 text-blue-800'
-                : party.current_mode === 'final'
-                  ? 'bg-red-100 text-red-800'
-                  : party.current_mode === 'final-result'
-                    ? 'bg-amber-100 text-amber-800'
-                    : 'bg-gray-100 text-gray-800'
+              party.current_mode === 'pre-voting'
+                ? 'bg-green-100 text-green-800'
+                : party.current_mode === 'interim'
+                  ? 'bg-blue-100 text-blue-800'
+                  : party.current_mode === 'final'
+                    ? 'bg-red-100 text-red-800'
+                    : party.current_mode === 'final-result'
+                      ? 'bg-amber-100 text-amber-800'
+                      : 'bg-gray-100 text-gray-800'
             }
           `}
           >
-            {party.current_mode === 'interim'
-              ? '中間投票'
-              : party.current_mode === 'final'
-                ? '最終投票'
-                : party.current_mode === 'final-result'
-                  ? '最終結果発表'
-                  : 'クローズ'}
+            {party.current_mode === 'pre-voting'
+              ? '投票前'
+              : party.current_mode === 'interim'
+                ? '中間投票'
+                : party.current_mode === 'final'
+                  ? '最終投票'
+                  : party.current_mode === 'final-result'
+                    ? '最終結果発表'
+                    : 'クローズ'}
           </span>
         </h2>
 
         <div className="flex gap-4 mt-4">
+          <form action={handleChangeMode.bind(null, 'pre-voting')}>
+            <button
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                party.current_mode === 'pre-voting'
+                  ? 'bg-green-100 text-green-800 border border-green-300'
+                  : 'border border-green-300 text-green-800 hover:bg-green-50'
+              }`}
+              type="submit"
+            >
+              投票前
+            </button>
+          </form>
           <form action={handleChangeMode.bind(null, 'interim')}>
             <button
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
@@ -191,7 +207,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               }`}
               type="submit"
             >
-              中間投票モード
+              中間投票
             </button>
           </form>
           <form action={handleChangeMode.bind(null, 'final')}>
@@ -203,7 +219,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               }`}
               type="submit"
             >
-              最終投票モード
+              最終投票
             </button>
           </form>
           <form action={handleChangeMode.bind(null, 'final-result')}>
@@ -215,7 +231,7 @@ export default async function MatchingPage({ params }: MatchingPageProps) {
               }`}
               type="submit"
             >
-              最終結果発表モード
+              最終結果発表
             </button>
           </form>
           <form action={handleChangeMode.bind(null, 'closed')}>

@@ -212,7 +212,7 @@ export default function RegisterPage() {
                 )}
               </div>
               <p className="mt-2 text-xs text-text-secondary">
-                ※ここで入力した名前は他の参加者には表示されません
+                ※パーティでのみ使用する名前となります。ニックネームなどでも構いません。
               </p>
             </div>
 
