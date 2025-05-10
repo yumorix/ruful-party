@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { format, parse } from 'date-fns';
 import { partySchema, PartyFormData } from '../../lib/utils/validation';
 import { Party } from '../../lib/db/supabase';
-import { current_type } from '../../lib/db/queries';
 
 interface PartyFormProps {
   initialData?: Partial<Party>;
@@ -29,7 +28,7 @@ export default function PartyForm({ initialData, onSubmit, isSubmitting }: Party
       location: initialData?.location || '',
       capacity: initialData?.capacity || 20,
       status: initialData?.status || 'preparing',
-      current_mode: initialData?.current_mode || 'closed',
+      current_mode: initialData?.current_mode || 'pre-voting',
     },
   });
 
@@ -231,6 +230,7 @@ export default function PartyForm({ initialData, onSubmit, isSubmitting }: Party
                       }`}
                       {...field}
                     >
+                      <option value="pre-voting">投票前</option>
                       <option value="interim">中間投票</option>
                       <option value="final">最終投票</option>
                       <option value="final-result">最終結果発表</option>

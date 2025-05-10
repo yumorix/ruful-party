@@ -3,7 +3,7 @@ import { Party, Participant, VoteInsert, Match as BaseMatch, SeatingPlan } from 
 import { ulid } from 'ulid';
 
 // Define current_type for use across the application
-export type current_type = 'interim' | 'final' | 'final-result' | 'closed';
+export type current_type = 'pre-voting' | 'interim' | 'final' | 'final-result' | 'closed';
 
 // Extended Match type to include joined participants data
 interface Match extends BaseMatch {
@@ -119,7 +119,12 @@ export async function hasUserVoted(token: string): Promise<boolean> {
 
     // Get party info
     const party = await getPartyById(participant.party_id);
-    if (!party || party.status !== 'active' || party.current_mode === 'closed') {
+    if (
+      !party ||
+      party.status !== 'active' ||
+      party.current_mode === 'closed' ||
+      party.current_mode === 'pre-voting'
+    ) {
       return false;
     }
 
@@ -153,7 +158,7 @@ export async function submitVotes(
   }
 
   // Check if voting is open
-  if (party.current_mode === 'closed') {
+  if (party.current_mode === 'closed' || party.current_mode === 'pre-voting') {
     throw new Error('現在投票は受け付けていません');
   }
 

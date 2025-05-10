@@ -7,11 +7,11 @@ export const partySchema = z.object({
   location: z.string().min(1, '場所は必須です'),
   capacity: z.number().min(2, '定員は2人以上必要です'),
   status: z.enum(['preparing', 'active', 'closed']),
-  current_mode: z.enum(['interim', 'final', 'final-result', 'closed']),
+  current_mode: z.enum(['pre-voting', 'interim', 'final', 'final-result', 'closed']),
 });
 
 // Define the current_mode type for easier reuse
-export type PartyCurrentMode = 'interim' | 'final' | 'final-result' | 'closed';
+export type PartyCurrentMode = 'pre-voting' | 'interim' | 'final' | 'final-result' | 'closed';
 
 export type PartyFormData = z.infer<typeof partySchema>;
 

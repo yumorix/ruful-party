@@ -241,7 +241,11 @@ export default function VoteClient({
           <div className="flex items-center mb-4">
             <div className="h-px flex-grow bg-gray-100"></div>
             <span className="px-2 text-xl text-text-secondary font-medium">
-              {party.current_mode === 'interim' ? '中間投票' : '最終投票'}
+              {party.current_mode === 'interim'
+                ? '中間投票'
+                : party.current_mode === 'final'
+                  ? '最終投票'
+                  : '投票'}
             </span>
             <div className="h-px flex-grow bg-gray-100"></div>
           </div>
@@ -290,7 +294,7 @@ export default function VoteClient({
                         value={option.id}
                         className="py-2 text-base"
                       >
-                        {option.participant_number}番
+                        {option.name} ({option.participant_number}番)
                       </option>
                     ))}
                   </select>
