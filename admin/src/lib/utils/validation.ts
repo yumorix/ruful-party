@@ -18,7 +18,10 @@ export type PartyFormData = z.infer<typeof partySchema>;
 // Participant validation
 export const participantSchema = z.object({
   party_id: z.string().min(1, 'パーティIDは必須です'),
-  participant_number: z.number().min(1, '参加者番号は1以上必要です'),
+  participant_number: z
+    .number()
+    .min(1, '参加者番号は1以上必要です')
+    .int('参加者番号は整数である必要があります'),
   name: z.string(),
   gender: z.enum(['male', 'female']),
   access_token: z.string().optional(),

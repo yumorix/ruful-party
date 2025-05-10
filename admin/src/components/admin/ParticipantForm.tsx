@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { participantSchema, ParticipantFormData } from '@/lib/utils/validation';
@@ -12,6 +12,7 @@ interface ParticipantFormProps {
   initialData?: Partial<Participant>;
   onSubmit: (data: ParticipantFormData) => Promise<void>;
   isSubmitting: boolean;
+  participants: Participant[];
 }
 
 export default function ParticipantForm({
@@ -19,6 +20,7 @@ export default function ParticipantForm({
   initialData,
   onSubmit,
   isSubmitting,
+  participants,
 }: ParticipantFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const router = useRouter();
@@ -31,7 +33,7 @@ export default function ParticipantForm({
     resolver: zodResolver(participantSchema),
     defaultValues: {
       party_id: partyId,
-      participant_number: initialData?.participant_number || 0,
+      participant_number: 1,
       name: initialData?.name || '',
       gender: initialData?.gender || 'male',
     },
@@ -39,6 +41,19 @@ export default function ParticipantForm({
 
   const onFormSubmit = async (data: ParticipantFormData) => {
     try {
+      // Check if the participant number is already used by another participant of the same gender
+      const sameGenderParticipants = participants.filter(p => p.gender === data.gender);
+      const numberExists = sameGenderParticipants.some(
+        p => p.participant_number === data.participant_number && p.id !== initialData?.id
+      );
+
+      if (numberExists) {
+        setSubmitError(
+          `この参加者番号は既に同性の参加者に使用されています。別の番号を選択してください。`
+        );
+        return;
+      }
+
       setSubmitError(null);
       await onSubmit(data);
       router.push(`/parties/${partyId}/participants`);

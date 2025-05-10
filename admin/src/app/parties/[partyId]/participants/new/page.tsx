@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ParticipantForm from '../../../../../components/admin/ParticipantForm';
-import { getParty, createParticipant } from '../../../../../lib/db/queries';
+import { getParty, createParticipant, getParticipants } from '../../../../../lib/db/queries';
 import { ParticipantFormData } from '../../../../../lib/utils/validation';
 import { generateAccessToken } from '../../../../../lib/utils/token';
 
@@ -16,6 +16,7 @@ export default async function NewParticipantPage(props: NewParticipantPageProps)
   const { partyId } = params;
 
   const party = await getParty(partyId);
+  const participants = await getParticipants(partyId);
 
   if (!party) {
     notFound();
@@ -57,7 +58,12 @@ export default async function NewParticipantPage(props: NewParticipantPageProps)
         </ol>
       </nav>
 
-      <ParticipantForm partyId={partyId} onSubmit={handleSubmit} isSubmitting={false} />
+      <ParticipantForm
+        partyId={partyId}
+        onSubmit={handleSubmit}
+        participants={participants}
+        isSubmitting={false}
+      />
     </div>
   );
 }
