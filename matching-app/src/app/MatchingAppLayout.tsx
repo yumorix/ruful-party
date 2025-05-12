@@ -1,6 +1,8 @@
 'use client';
 
 import { Suspense } from 'react';
+import Image from 'next/image';
+import logo from './logo.png';
 
 export default function MatchingAppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,11 +12,9 @@ export default function MatchingAppLayout({ children }: { children: React.ReactN
         <div className="absolute inset-0 bg-pattern-dots bg-dots-sm opacity-5"></div>
         <div className="flex items-center justify-center px-6 h-20 relative">
           <div className="absolute left-0 top-0 w-full h-1 bg-gradient-to-r from-secondary-light via-primary-light to-secondary-light opacity-70"></div>
-          <h1 className="text-2xl font-serif text-primary-dark tracking-wide flex items-center">
-            <span className="text-accent-gold mr-1">R</span>uful
-            <span className="text-accent-rose mx-1">P</span>arty
-            <span className="decorative-dot"></span>
-          </h1>
+          <div className="flex items-center">
+            <Image src={logo} alt="Ruful Party Logo" width={150} height={40} className="mr-2" />
+          </div>
         </div>
       </header>
 

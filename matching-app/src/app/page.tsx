@@ -39,11 +39,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 animate-fade-in">
-      <h1 className="text-3xl font-serif text-primary-dark mb-8 tracking-wide flex items-center">
-        <span className="text-accent-gold">R</span>uful
-        <span className="text-accent-rose mx-1">P</span>arty
-      </h1>
-
       <div className="card w-full max-w-md shadow-elegant overflow-hidden">
         <div className="h-1 bg-gradient-to-r from-secondary-light via-primary-light to-secondary-light"></div>
         <div className="card-content relative">
