@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: 'RufulParty - マッチングアプリ',
   description: '婚活イベント向けマッチングシステム',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/logo.png',
   },
 };
 
